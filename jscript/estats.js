@@ -89,7 +89,7 @@ new Chart(barCtx, {
         labels: Object.keys(activitiesByMonthAndTime),
         datasets: [
             {
-                label: 'mannana',
+                label: 'Mañana',
                 data: Object.values(activitiesByMonthAndTime).map(item => item.mannana),
                 backgroundColor: '#03e9f4'
             },
