@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Actividades</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/lista-styles.css">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        h1, h2 {
+            color: #03e9f4;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            text-decoration: none;
+            color: #f4dc03;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th.label-col {
+            background-color: #161b22;
+            color: #03e9f4;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal img {
+            width: 800px;
+            height: 600px;
+        }
+        .modal button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="titulo">Listado de Actividades</h1>
+    <table style="width: 100%; margin: auto; text-align: center; border-collapse: collapse;" id="activity-table">
+        <thead>
+            <tr class="head-row">
+                <th>Inicio</th>
+                <th>Término</th>
+                <th>Comuna</th>
+                <th>Sector</th>
+                <th>Tema</th>
+                <th>Nombre Organizador</th>
+                <th>Total Fotos</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="row-1">
+                <td>19:00</td>
+                <td>22:00</td>
+                <td>San Antonio</td>
+                <td>Multicancha de Planicies de Bellavista</td>
+                <td>Deporte</td>
+                <td>Juan Pérez</td>
+                <td>1</td>
+            </tr>
+            <tr id="row-2">
+                <td>12:00</td>
+                <td>18:00</td>
+                <td>Macul</td>
+                <td>Jardín de Macul</td>
+                <td>Cultura</td>
+                <td>María González</td>
+                <td>2</td>
+            </tr>
+            <tr id="row-3">
+                <td>16:00</td>
+                <td>20:00</td>
+                <td>Temuco</td>
+                <td>Diversos barrios de la comuna</td>
+                <td>Recreación</td>
+                <td>Carlos López</td>
+                <td>1</td>
+            </tr>
+            <tr id="row-4">
+                <td>11:00</td>
+                <td>19:00</td>
+                <td>Conchalí</td>
+                <td>Plazas de agua en diversos sectores</td>
+                <td>Juegos</td>
+                <td>Fernanda Díaz</td>
+                <td>2</td>
+            </tr>
+            <tr id="row-5">
+                <td>12:00</td>
+                <td>18:00</td>
+                <td>Ñuñoa</td>
+                <td>Plaza Ñuñoa</td>
+                <td>Música</td>
+                <td>Roberto Silva</td>
+                <td>1</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="activity-details" style="display: none;">
+        <h2>Detalles de la Actividad</h2>
+        <div id="activity-info">
+            <ul>
+                <li><strong>Descripción:</strong> <span id="activity-description"></span></li>
+                <li><strong>Fecha:</strong> <span id="activity-date"></span></li>
+                <li><strong>Hora Inicio:</strong> <span id="activity-start-time"></span></li>
+                <li><strong>Hora Término:</strong> <span id="activity-end-time"></span></li>
+                <li><strong>Comuna:</strong> <span id="activity-commune"></span></li>
+                <li><strong>Sector:</strong> <span id="activity-sector"></span></li>
+                <li><strong>Tema:</strong> <span id="activity-theme"></span></li>
+                <li><strong>Total Fotos:</strong> <span id="activity-photo-count"></span></li>
+                <li><strong>Nombre Organizador:</strong> <span id="activity-organizer"></span></li>
+            </ul>
+        </div>
+        <div id="activity-photos">
+            <h3>Fotos de la Actividad</h3>
+            <div id="photos-container">
+
+            </div>
+            <div id="photo-modal" class="modal" style="display: none;">
+                <button id="close-modal">Cerrar</button>
+            </div>
+        </div>
+        <button id="back-to-list">Volver al listado</button>
+        <button id="back-to-home">Volver al menú</button>
+    </div>
+    <script src="../jscript/mostrar_actividad.js"></script>
+</body>
+</html>
