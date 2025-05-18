@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarea 1</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        h1, h2 {
+            color: #c9d1d9;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            text-decoration: none;
+            color: #f4dc03;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th.label-col {
+            background-color: #161b22;
+            color: #03e9f4;
+        }
+        .col-img img {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>¡Bienvenido/a a la gestión de actividades recreativas de Chile!</h1>
+    </div>
+    <div style="margin-top: 50px;">
+        <h2>Menú:</h2>
+    </div>
+    <ul>
+        <li><a href="{{ url_for('formulario') }}">Agregar actividad</a></li>
+        <li><a href="{{ url_for('listar_actividades') }}">Ver actividades</a></li>
+        <li><a href="{{ url_for('stats') }}">Ver estadísticas</a></li>
+    </ul>
+    <div style="margin-top: 50px;">
+        <h2>Últimas actividades registradas:</h2>
+    </div>
+    <div style="margin-top: 50px;">
+        {% if data %}
+            <table>
+                <thead>
+                    <tr>
+                        <th class="label-col">Inicio</th>
+                        <th class="label-col">Término</th>
+                        <th class="label-col">Comuna</th>
+                        <th class="label-col">Sector</th>
+                        <th class="label-col">Tema</th>
+                        <th class="label-col">Imagen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for actividad in data %}
+                    <tr>
+                        <td>{{ actividad.inicio }}</td>
+                        <td>{{ actividad.termino }}</td>
+                        <td>{{ actividad.comuna }}</td>
+                        <td>{{ actividad.sector }}</td>
+                        <td>{{ actividad.tema }}</td>
+                        <td class="col-img">
+                            {% for img in actividad.imagen %}
+                                <img src="{{ url_for('static', filename=img) }}" alt="Imagen de la actividad">
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No hay actividades registradas.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarea 1</title>
+    <link rel="stylesheet" href="../static/css/form-styles.css">
+</head>
+<body>
+    <div class="login-box">
+        <form name="agregar-actividad-form" method="post" enctype="multipart/form-data" action="{{ url_for('agregar_actividad') }}">
+            <h2>Agregue su actividad</h2>
+            <div id="confirm-modal" class="modal" hidden>
+                <div class="modal-content" id="confirm-content">
+                    <p>¿Está seguro de que desea enviar el formulario?</p>
+                    <button id="confirm-btn">Confirmar</button>
+                    <button id="cancel-btn">Cancelar</button>
+                </div>
+                <div class="modal-content" id="thank-you-content" hidden>
+                    <p>Hemos recibido su información, muchas gracias y suerte en su actividad.</p>
+                    <button id="return-btn">Volver a la portada</button>
+                </div>
+            </div>
+            {% if error %}
+                <div class="form-error" style="opacity: 0.6; background-color: rgb(82, 17, 17); padding: 20px; border-radius: 10px;">
+                    <h3 style="color:rgb(177, 21, 21)">{{ error }}</h3>
+                </div>
+            {% endif %}
+            <div hidden id="form-error" style="opacity: 0.6; background-color: rgb(82, 71, 17); padding: 20px; border-radius: 10px;">
+                <h3 style="color: rgb(255, 213, 4);">Existen errores en su formulario</h3>
+                <ul style="color: rgb(255, 213, 4); font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;" id="error-list">
+                </ul>
+            </div>
+            <br>
+            <div class="user-box">
+                <h3>¿Dónde será su evento?</h3>
+            </div>
+            <div class="user-box">
+                <select id="select-region" name="select-region" required>
+                    <option value="">Seleccione una región</option>
+                </select>
+                <p class="error-message" hidden id="error-message-region">Error: </p>
+            </div>
+            <div class="user-box">
+                <select id="select-comuna" name="select-comuna" required>
+                    <option value="">Seleccione una comuna</option>
+                </select>
+                <p class="error-message" hidden id="error-message-comuna">Error: </p>
+            </div>
+            <div class="user-box">
+                <input type="text" id="sector" name="sector" maxlength="100">
+                <label for="sector">Sector:</label>
+                <p class="error-message" hidden id="error-message-sector">Error: </p>
+            </div>
+            <div class="user-box">
+                <h3>¿Quién organiza el evento?</h3>
+            </div>
+            <div class="user-box">
+                <input type="text" id="nombre" name="nombre" required maxlength="200">
+                <label for="nombre">Nombre:</label>
+                <p class="error-message" hidden id="error-message-nombre">Error: </p>
+            </div>
+            <div class="user-box">
+                <input type="email" id="email" name="email" required maxlength="100">
+                <label for="email">Correo:</label>
+                <p class="error-message" hidden id="error-message-email">Error: </p>
+            </div>
+            <div class="user-box">
+                <input placeholder="+NNN.NNNNNNNN" type="tel" id="telefono" name="telefono">
+                <label for="telefono">Teléfono:</label>
+                <p class="error-message" hidden id="error-message-telefono">Error: </p>
+            </div>
+            <div class="user-box" id="contacto-div">
+                <h3>Contactos</h3>
+                <select id="contacto" name="contacto">
+                    <option value="">Seleccione un tipo de contacto</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="telegram">Telegram</option>
+                    <option value="X">X</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="tiktok">TikTok</option>
+                    <option value="otra">Otra</option>
+                </select>
+                <p class="error-message" hidden id="error-message-contacto">Error: </p>
+            </div>
+            <div class="user-box">
+                <h3>¿Cuándo y de qué trata?</h3>
+            </div>
+            <div class="user-box">
+                <label for="fecha-y-hora-inicio">Fecha y hora de inicio:</label>
+                <input type="datetime-local" id="fecha-y-hora-inicio" name="fecha-y-hora-inicio" required>
+                <p class="error-message" hidden id="error-message-fecha">Error: </p>
+            </div>
+            <div class="user-box">
+                <label for="fecha-y-hora-fin">Fecha y hora de término:</label>
+                <input type="datetime-local" id="fecha-y-hora-fin" name="fecha-y-hora-fin">
+                <p class="error-message" hidden id="error-message-fecha-fin">Error: </p>
+            </div>
+            <div class="user-box">
+                <textarea class="user-box" id="descripcion" name="descripcion" rows="10" cols="50"></textarea>
+                <label for="descripcion">Descripción:</label>
+                <p class="error-message" hidden id="error-message-descripcion">Error: </p>
+            </div>
+            <div class="user-box">
+                <select id="tema" name="tema" required>
+                    <option value="">Seleccione un tema</option>
+                    <option value="musica">Música</option>
+                    <option value="deporte">Deporte</option>
+                    <option value="ciencias">Ciencias</option>
+                    <option value="religion">Religión</option>
+                    <option value="politica">Política</option>
+                    <option value="tecnologia">Tecnología</option>
+                    <option value="juegos">Juegos</option>
+                    <option value="baile">Baile</option>
+                    <option value="comida">Comida</option>
+                    <option value="otro">Otro</option>
+                </select>
+                <p class="error-message" hidden id="error-message-tema">Error: </p>
+            </div>
+            <div class="user-box" id="tema-otro-div" hidden>
+                <input type="text" id="tema-otro" name="tema-otro" maxlength="100">
+                <label for="tema-otro">Especifique el tema:</label>
+                <p class="error-message" hidden id="error-message-tema-otro">Error: </p>
+            </div>
+            <div class="user-box" id="imagen-div">
+                <input type="file" id="imagenes" name="imagenes" accept="image/*" multiple required>
+                <label for="imagenes">Imágenes:</label>
+                <p class="error-message" hidden id="error-message-imagen">Error: </p>
+            </div>
+            <button class="boton-oscuro" id="submit-btn" type="button" onclick="validar()">Agregar actividad</button>
+        </form>
+    </div>
+    <script src="../static/js/form-validation.js"></script>
+    <script src="../static/js/agregar.js"></script>
+    <script src="../static/js/region_comuna.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Actividades</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/lista-styles.css">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        h1, h2 {
+            color: #03e9f4;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            text-decoration: none;
+            color: #f4dc03;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th.label-col {
+            background-color: #161b22;
+            color: #03e9f4;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal img {
+            width: 800px;
+            height: 600px;
+        }
+        .modal button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="titulo">Listado de Actividades</h1>
+    {% if data %}
+        <table style="width: 100%; margin: auto; text-align: center; border-collapse: collapse;" id="activity-table">
+            <thead>
+                <tr class="head-row">
+                    <th>Inicio</th>
+                    <th>Término</th>
+                    <th>Comuna</th>
+                    <th>Sector</th>
+                    <th>Tema</th>
+                    <th>Nombre Organizador</th>
+                    <th>Total Fotos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for actividad in data %}
+                    <tr class="data-row" data-id="{{ actividad.id }}" onclick="window.location='{{ url_for('detalle_actividad', id=actividad.id) }}'">
+                        <td>{{ actividad.fecha_inicio }}</td>
+                        <td>{{ actividad.fecha_termino }}</td>
+                        <td>{{ actividad.comuna }}</td>
+                        <td>{{ actividad.sector }}</td>
+                        <td>{{ actividad.tema }}</td>
+                        <td>{{ actividad.nombre_organizador }}</td>
+                        <td>{{ actividad.total_fotos }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div>
+            {% if page > 1 %}
+                <a href="{{ url_for('listar_actividades', page=page-1) }}">Anterior</a>
+            {% endif %}
+            Página {{ page }} de {{ total//5 + (1 if total % 5 > 0 else 0) }}
+            {% if page * page_size < total %}
+                <a href="{{ url_for('listar_actividades', page=page+1) }}">Siguiente</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>No hay actividades registradas.</p>
+    {% endif %}
+    <div>
+        <a href="{{ url_for('index') }}">Volver al inicio</a>
+        <br>
+        <a href="{{ url_for('agregar_actividad') }}">Agregar actividad</a>
+    </div>
+</body>
+</html>
