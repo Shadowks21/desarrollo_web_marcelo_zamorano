@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Estadísticas de Actividades{% endblock %}
+
+{% block navbar_title %}Estadísticas de Actividades{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stats-styles.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="grafico-container" id="lineChartContainer">
+        <h2>Cantidad de Actividades por Día</h2>
+        <canvas id="lineChart"></canvas>
+    </div>
+    <div class="grafico-container" id="pieChartContainer">
+        <h2>Total de Actividades por Tipo</h2>
+        <canvas id="pieChart"></canvas>
+    </div>
+    <div class="grafico-container" id="barChartContainer">
+        <h2>Cantidad de Actividades por Mes y Horario</h2>
+        <canvas id="barChart"></canvas>
+    </div>
+{% endblock %}
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/stats.js') }}"></script>
+{% endblock %}
