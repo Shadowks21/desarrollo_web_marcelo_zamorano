@@ -17,14 +17,14 @@ def validate_sector(sector):
     if sector is None:
         return True
     sector = sector.strip()
-    b = bool(re.match('^[\w\sáéíóúÁÉÍÓÚñÑ]{1,100}$', sector))
+    b = bool(re.match(r'^[\w\sáéíóúÁÉÍÓÚñÑ]{1,100}$', sector))
     return b
 
 def validate_nombre(nombre):
     if nombre is None:
         return False, "No existe nombre"
     nombre = nombre.strip()
-    b = bool(re.match('^[\w\sáéíóúÁÉÍÓÚñÑ]{1,200}$', nombre))
+    b = bool(re.match(r'^[\w\sáéíóúÁÉÍÓÚñÑ]{1,200}$', nombre))
     return b
 
 def validate_email(email):
@@ -85,7 +85,7 @@ def validate_descripcion(descripcion):
     if descripcion == "":
         return True
     descripcion = descripcion.strip()
-    b = bool(re.match('^[\w\sáéíóúÁÉÍÓÚñÑ¿?¡!.,;:()"]{1,500}$', descripcion))
+    b = bool(re.match(r'^[\w\sáéíóúÁÉÍÓÚñÑ¿?¡!.,;:()"]{1,500}$', descripcion))
     return b
 
 def validate_temas(tema):
@@ -97,7 +97,7 @@ def validate_temas(tema):
     if tema.lower() not in temas_permitidos:
         if b:
             tema = tema.split("-")[0]
-            b = bool(re.match('^[\w\sáéíóúÁÉÍÓÚñÑ.]{1,500}$', tema))
+            b = bool(re.match(r'^[\w\sáéíóúÁÉÍÓÚñÑ.]{1,500}$', tema))
             if not b:
                 return False
         else:

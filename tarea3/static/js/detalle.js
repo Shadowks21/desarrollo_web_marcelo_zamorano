@@ -1,4 +1,4 @@
-document.getElementById('comentario-form').addEventListener('submit', function(e) {
+const validate_comment = (e) => { 
     const nombre = document.getElementById('nombre').value.trim();
     const texto = document.getElementById('texto').value.trim();
     let error = '';
@@ -11,4 +11,6 @@ document.getElementById('comentario-form').addEventListener('submit', function(e
         e.preventDefault();
         alert(error);
     }
-});
+}
+
+document.getElementById('comentario-form').addEventListener('submit', validate_comment);
