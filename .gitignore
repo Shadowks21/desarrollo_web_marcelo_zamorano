@@ -2,3 +2,5 @@ venvtareas
 tarea3/__pycache__
 tarea3/utils/__pycache__
 tarea3/database/__pycache__
+tarea3/utils/__pycache__/validations.cpython-313.pyc
+tarea3/database/__pycache__/db.cpython-313.pyc

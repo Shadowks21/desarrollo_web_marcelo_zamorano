@@ -180,7 +180,7 @@ def save_activity(comuna, sector, nombre, email, celular, contactar_por, fecha_i
 
     bool = "-" in tema
     actividad_tema = Actividad_tema(
-        tema="otro" if bool else tema,
+        tema=tema.split("-")[0] if bool else tema,
         glosa_otro=tema.split("-")[0] if bool else None,
         actividad_id=actividad.id
     )

@@ -6,7 +6,7 @@ async function renderLineChart() {
         }
         const data = await res.json();
         const labels = data.map(item => item.fecha);
-        const values = data.map(item => item.cantidad);
+        const values = data.map(item => item.total);
         const lineCtx = document.getElementById('lineChart').getContext('2d');
         new Chart(lineCtx, {
             type: 'line',
@@ -48,8 +48,8 @@ async function renderPieChart() {
             throw new Error(res.statusText);
         }
         const data = await res.json();
-        const labels = data.map(item => item.tipo);
-        const values = data.map(item => item.cantidad);
+        const labels = data.map(item => item.tema);
+        const values = data.map(item => item.total);
         const pieCtx = document.getElementById('pieChart').getContext('2d');
         new Chart(pieCtx, {
             type: 'pie',
