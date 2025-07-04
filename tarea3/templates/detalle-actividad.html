@@ -59,7 +59,7 @@
                     <ul>
                     {% for comentario in comentarios %}
                         <li>
-                            <strong>{{ comentario.nombre }}</strong>: {{ comentario.texto }}
+                            <strong>({{ comentario.fecha }}) {{ comentario.nombre }}</strong>: {{ comentario.texto }}
                         </li>
                     {% endfor %}
                     </ul>

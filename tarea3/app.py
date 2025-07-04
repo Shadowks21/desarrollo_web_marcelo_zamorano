@@ -60,11 +60,11 @@ def agregar_actividad():
         tema = request.form.get("tema") if request.form.get("tema") != "otro" else (request.form.get("tema-otro") + "-")
         fotos = request.files.getlist("imagenes")
 
+        validation = validate_form(region, comuna, nombre, email, contactos, fecha_inicio_str, tema, fotos,
+                      sector, descripcion, fecha_termino_str, celular)
         # Validar los datos del formulario
-        if not validate_form(region, comuna, nombre, email, contactos, fecha_inicio_str, tema, fotos,
-                             sector, descripcion, fecha_termino_str, celular):
-            print("Error en la validación de datos")
-            return render_template("agregar-actividad.html", error="Error en la validación de datos, porfavor revise los datos ingresados")
+        if not validation["verified"]:
+            return render_template("agregar-actividad.html", errors=validation["error_messages"])
 
         fotos_guardadas = []
         for foto in fotos:
@@ -98,6 +98,8 @@ def detalle_actividad(id):
         return redirect(url_for("listar_actividades"))
     session = SessionLocal()
     comentarios = session.query(Comentario).filter_by(actividad_id=id).all()
+    for comentario in comentarios:
+        comentario.fecha = comentario.fecha.strftime("%d/%m/%Y %H:%M")
     session.close()
     return render_template("detalle-actividad.html", actividad=actividad, comentarios=comentarios, active_page="detalle-actividad")
 

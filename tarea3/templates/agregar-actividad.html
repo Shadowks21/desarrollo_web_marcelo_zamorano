@@ -22,14 +22,20 @@
                     <button id="return-btn">Volver a la portada</button>
                 </div>
             </div>
-            {% if error %}
+            {% if errors %}
                 <div class="form-error" style="opacity: 0.6; background-color: rgb(82, 17, 17); padding: 20px; border-radius: 10px;">
-                    <h3 style="color:rgb(177, 21, 21)">{{ error }}</h3>
+                    <h3 style="color: rgb(161,16,16);">Existen errores en su formulario</h3>
+                <ul style="color: rgb(161,16,16); font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;" id="error-list">
+                    {% for error_message in errors %}
+                        <li>{{ error_message }}</li>
+                    {% endfor %}
+                </ul>
                 </div>
             {% endif %}
             <div hidden id="form-error" style="opacity: 0.6; background-color: rgb(82, 71, 17); padding: 20px; border-radius: 10px;">
                 <h3 style="color: rgb(255, 213, 4);">Existen errores en su formulario</h3>
                 <ul style="color: rgb(255, 213, 4); font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;" id="error-list">
+
                 </ul>
             </div>
             <br>
@@ -53,8 +59,8 @@
                             <input type="text" id="sector" name="sector" maxlength="100">
                             <label for="sector">Sector:</label>
                             <p class="error-message" hidden id="error-message-sector">Error: </p>
+                        </div>
                     </div>
-                    </section>
                 </section>
                 <section class="form-section organizador">
                     <h3>¿Quién organiza el evento?</h3>
