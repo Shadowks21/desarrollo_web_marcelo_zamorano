@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tarea 3{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="navbar-flex">
+            <span class="navbar-title">{% block navbar_title %}{% endblock %}</span>
+            <ul class="navbar-list">
+                {% if active_page != 'inicio' %}
+                    <li><a href="{{ url_for('index') }}">Inicio</a></li>
+                {% endif %}
+                {% if active_page != 'agregar-actividad' %}
+                    <li><a href="{{ url_for('agregar_actividad') }}">Agregar actividad</a></li>
+                {% endif %}
+                {% if active_page != 'listar' %}
+                    <li><a href="{{ url_for('listar_actividades') }}">Ver actividades</a></li>
+                {% endif %}
+                {% if active_page != 'stats' %}
+                    <li><a href="{{ url_for('stats') }}">Ver estadísticas</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <!-- Contenido principal -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

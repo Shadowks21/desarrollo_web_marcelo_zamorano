@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Tarea 3{% endblock %}</title>
+    <title>{% block title %}Tarea 4 - Híbrido{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -25,13 +27,65 @@
                 {% if active_page != 'stats' %}
                     <li><a href="{{ url_for('stats') }}">Ver estadísticas</a></li>
                 {% endif %}
+                <li><a href="http://localhost:8080/java/" target="_blank" class="java-link">
+                    <i class="fab fa-java"></i> Java App
+                </a></li>
             </ul>
         </div>
     </nav>
+    
     <!-- Contenido principal -->
     <main>
         {% block content %}{% endblock %}
     </main>
+    
+    <!-- Widget de integración con Java -->
+    <div class="fixed-bottom p-3" style="z-index: 1000;">
+        <div class="card d-none" id="java-integration-widget">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    <i class="fab fa-java"></i> Integración Java
+                </h6>
+                <button class="btn btn-sm btn-outline-secondary" onclick="toggleJavaWidget()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="java-widget-content"></div>
+            </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="showJavaWidget()" id="java-widget-toggle">
+            <i class="fab fa-java"></i> Java API
+        </button>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/java-integration.js') }}"></script>
+    <script>
+        // Funciones para el widget de Java
+        function showJavaWidget() {
+            document.getElementById('java-integration-widget').classList.remove('d-none');
+            document.getElementById('java-widget-toggle').classList.add('d-none');
+            
+            // Crear el widget de búsqueda
+            window.JavaAPI.crearWidgetBusqueda('java-widget-content');
+        }
+        
+        function toggleJavaWidget() {
+            document.getElementById('java-integration-widget').classList.add('d-none');
+            document.getElementById('java-widget-toggle').classList.remove('d-none');
+        }
+        
+        // Estilos para el enlace de Java
+        document.addEventListener('DOMContentLoaded', function() {
+            const javaLink = document.querySelector('.java-link');
+            if (javaLink) {
+                javaLink.style.color = '#f89820';
+                javaLink.style.fontWeight = 'bold';
+            }
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
