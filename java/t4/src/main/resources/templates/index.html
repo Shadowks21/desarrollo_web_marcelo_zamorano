@@ -1,117 +1,64 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividades Finalizadas - T4 Java</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <th:block th:replace="fragments/head :: head('Inicio - Java', ${ {} })"></th:block>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/java/">
-                <i class="fas fa-calendar-check"></i> Actividades Finalizadas
-            </a>
-            <div class="navbar-nav">
-                <a class="nav-link active" href="/java/">Home</a>
-                <a class="nav-link" href="/java/actividades">Todas las Actividades</a>
-                <a class="nav-link" href="http://localhost:5000" target="_blank">Flask App</a>
+    <th:block th:replace="fragments/navbar :: navbar('Actividades recreativas de Chile', 'inicio')"></th:block>
+    
+    <main>
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-center mb-4">¡Bienvenido a la aplicación Java!</h1>
+                    <p class="text-center">Esta es la aplicación Java Spring Boot corriendo en el puerto 8080.</p>
+                </div>
             </div>
-        </div>
-    </nav>
-
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-12">
-                <h1><i class="fas fa-check-circle text-success"></i> Actividades Finalizadas</h1>
-                <p class="lead">Estas son las actividades que ya han concluido. Haz clic en cualquiera para puntuarla.</p>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-list"></i> Ver Actividades
+                            </h5>
+                            <p class="card-text">Explora todas las actividades registradas en el sistema.</p>
+                            <a th:href="@{/actividades}" class="btn btn-primary">Ver Actividades</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-search"></i> Buscar Actividades
+                            </h5>
+                            <p class="card-text">Utiliza filtros avanzados para encontrar actividades específicas.</p>
+                            <a th:href="@{/buscar}" class="btn btn-success">Buscar Actividades</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="row mt-4" th:if="${actividades and not #lists.isEmpty(actividades)}">
-            <div class="col-md-12">
-                <div class="row">
-                    <div th:each="actividad : ${actividades}" class="col-md-6 col-lg-4 mb-4">
-                        <div class="card h-100 shadow-sm actividad-card" 
-                             style="cursor: pointer;" 
-                             th:onclick="'window.location.href=\'/java/actividad/' + ${actividad.id} + '\''">
-                            <div class="card-header bg-success text-white">
-                                <h6 class="card-title mb-0">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span th:text="${actividad.comuna != null ? actividad.comuna.nombre : 'Sin comuna'}">Comuna</span>
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title" th:text="${actividad.nombre}">Nombre Actividad</h5>
-                                <p class="card-text">
-                                    <small class="text-muted">
-                                        <i class="fas fa-envelope"></i> 
-                                        <span th:text="${actividad.email}">email@ejemplo.com</span>
-                                    </small>
-                                </p>
-                                <p class="card-text" th:if="${actividad.descripcion}">
-                                    <span th:text="${#strings.abbreviate(actividad.descripcion, 100)}">Descripción...</span>
-                                </p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">
-                                        <i class="fas fa-calendar"></i>
-                                        <span th:text="${#temporals.format(actividad.diaHoraInicio, 'dd/MM/yyyy')}">01/01/2024</span>
-                                    </small>
-                                    <span class="badge bg-primary">
-                                        <i class="fas fa-star"></i> Puntuar
-                                    </span>
-                                </div>
-                            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fab fa-python"></i> Integración con Python
+                            </h5>
+                            <p class="card-text">Esta aplicación puede integrarse con la aplicación Python para una experiencia híbrida.</p>
+                            <a href="http://localhost:3000/" target="_blank" class="btn btn-info">
+                                <i class="fab fa-python"></i> Ir a Python App
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="row mt-4" th:if="${actividades == null or #lists.isEmpty(actividades)}">
-            <div class="col-md-12">
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle fa-2x mb-3"></i>
-                    <h4>No hay actividades finalizadas</h4>
-                    <p>Actualmente no hay actividades que hayan terminado y estén disponibles para puntuar.</p>
-                    <a href="/java/actividades" class="btn btn-primary">
-                        <i class="fas fa-list"></i> Ver todas las actividades
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-5">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <h5>¿Quieres ver más actividades?</h5>
-                        <p>Explora todas las actividades disponibles o regresa a la aplicación Flask.</p>
-                        <a href="/java/actividades" class="btn btn-outline-primary me-2">
-                            <i class="fas fa-list"></i> Todas las Actividades
-                        </a>
-                        <a href="http://localhost:5000" target="_blank" class="btn btn-outline-secondary">
-                            <i class="fab fa-python"></i> Flask App
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        .actividad-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .actividad-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
-        }
-        .card-title {
-            color: #2c3e50;
-        }
-    </style>
+    </main>
+    
+    <th:block th:replace="fragments/python-widget :: python-widget"></th:block>
+    <th:block th:replace="fragments/scripts :: scripts(${ {} })"></th:block>
 </body>
 </html>

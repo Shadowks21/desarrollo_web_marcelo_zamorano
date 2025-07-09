@@ -12,12 +12,11 @@ import java.util.List;
 @Table(name = "nota")
 public class Nota {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
     
     @Column(name = "actividad_id", nullable = false)
-    private Integer actividadId;
+    private Long actividadId;
     
     @Column(nullable = false)
     private Integer nota;
@@ -29,25 +28,22 @@ public class Nota {
     // Constructors
     public Nota() {}
     
-    public Nota(Integer actividadId, Integer nota) {
+    public Nota(Long actividadId, Integer nota) {
         this.actividadId = actividadId;
         this.nota = nota;
     }
-    
+
     // Getters and Setters
-    public Integer getId() { 
-        return id; 
+
+    public Long getId() {
+        return id;
     }
     
-    public void setId(Integer id) { 
-        this.id = id; 
-    }
-    
-    public Integer getActividadId() { 
+    public Long getActividadId() {
         return actividadId; 
     }
     
-    public void setActividadId(Integer actividadId) { 
+    public void setActividadId(Long actividadId) {
         this.actividadId = actividadId; 
     }
     
@@ -81,4 +77,5 @@ public class Nota {
         @Query("SELECT COUNT(n) FROM Nota n WHERE n.actividadId = :actividadId")
         Long countByActividadId(@Param("actividadId") Integer actividadId);
     }
+
 }

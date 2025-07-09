@@ -1,52 +1,50 @@
-{% extends "base.html" %}
-
-{% block title %}Listado de Actividades{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/lista-styles.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/listado-styles.css') }}">
-{% endblock %}
-
-{% block navbar_title %}Listado de Actividades{% endblock %}
-
-{% block content %}
-    {% if data %}
-        <table style="width: 100%; margin: auto; text-align: center; border-collapse: collapse;" id="activity-table">
-            <thead>
-                <tr class="head-row">
-                    <th>Inicio</th>
-                    <th>Término</th>
-                    <th>Comuna</th>
-                    <th>Sector</th>
-                    <th>Tema</th>
-                    <th>Nombre Organizador</th>
-                    <th>Total Fotos</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for actividad in data %}
-                    <tr class="data-row" data-id="{{ actividad.id }}" onclick="window.location='{{ url_for('detalle_actividad', id=actividad.id) }}'">
-                        <td>{{ actividad.fecha_inicio }}</td>
-                        <td>{{ actividad.fecha_termino }}</td>
-                        <td>{{ actividad.comuna }}</td>
-                        <td>{{ actividad.sector }}</td>
-                        <td>{{ actividad.tema }}</td>
-                        <td>{{ actividad.nombre_organizador }}</td>
-                        <td>{{ actividad.total_fotos }}</td>
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <th:block th:replace="fragments/head :: head('Listado de Actividades', ${ {'lista-styles.css', 'listado-styles.css'} })"></th:block>
+</head>
+<body th:with="navbarTitle='Listado de Actividades', activePage='listar'">
+    <main layout:fragment="content">
+        <div th:if="${data and not #lists.isEmpty(data)}">
+            <table style="width: 100%; margin: auto; text-align: center; border-collapse: collapse;" id="activity-table">
+                <thead>
+                    <tr class="head-row">
+                        <th>Inicio</th>
+                        <th>Término</th>
+                        <th>Comuna</th>
+                        <th>Sector</th>
+                        <th>Tema</th>
+                        <th>Nombre Organizador</th>
+                        <th>Total Fotos</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div>
-            {% if page > 1 %}
-                <a href="{{ url_for('listar_actividades', page=page-1) }}">Anterior</a>
-            {% endif %}
-            Página {{ page }} de {{ total//5 + (1 if total % 5 > 0 else 0) }}
-            {% if page * page_size < total %}
-                <a href="{{ url_for('listar_actividades', page=page+1) }}">Siguiente</a>
-            {% endif %}
+                </thead>
+                <tbody>
+                    <tr th:each="actividad : ${data}" 
+                        class="data-row" 
+                        th:data-id="${actividad.id}" 
+                        th:onclick="'window.location=\'' + @{/actividad/{id}(id=${actividad.id})} + '\''">
+                        <td th:text="${actividad.fechaInicio}">Fecha inicio</td>
+                        <td th:text="${actividad.fechaTermino}">Fecha término</td>
+                        <td th:text="${actividad.comuna}">Comuna</td>
+                        <td th:text="${actividad.sector}">Sector</td>
+                        <td th:text="${actividad.tema}">Tema</td>
+                        <td th:text="${actividad.nombreOrganizador}">Organizador</td>
+                        <td th:text="${actividad.totalFotos}">Total fotos</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div>
+                <a th:if="${page > 1}" 
+                   th:href="@{/actividades(page=${page - 1})}">Anterior</a>
+                <span th:text="'Página ' + ${page} + ' de ' + ${totalPages}">Página X de Y</span>
+                <a th:if="${page < totalPages}" 
+                   th:href="@{/actividades(page=${page + 1})}">Siguiente</a>
+            </div>
         </div>
-    {% else %}
-        <p>No hay actividades registradas.</p>
-    {% endif %}
-{% endblock %}
+        <p th:unless="${data and not #lists.isEmpty(data)}">No hay actividades registradas.</p>
+    </main>
+</body>
+</html>

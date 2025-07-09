@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <th:block th:replace="fragments/head :: head(${pageTitle}, ${extraCss})"></th:block>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <th:block th:replace="fragments/navbar :: navbar(${navbarTitle}, ${activePage})"></th:block>
+    
+    <!-- Contenido principal -->
+    <main layout:fragment="content">
+        <!-- El contenido específico de cada página se insertará aquí -->
+    </main>
+    
+    <!-- Widget de integración con Python -->
+    <th:block th:replace="fragments/python-widget :: python-widget"></th:block>
+    
+    <!-- Scripts -->
+    <th:block th:replace="fragments/scripts :: scripts(${extraJs})"></th:block>
+</body>
+</html>

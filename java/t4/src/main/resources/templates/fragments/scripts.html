@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Scripts -->
+    <div th:fragment="scripts(extraJs)">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/js/python-integration.js}"></script>
+        <script>
+            // Funciones para el widget de Python
+            function showPythonWidget() {
+                document.getElementById('python-integration-widget').classList.remove('d-none');
+                document.getElementById('python-widget-toggle').classList.add('d-none');
+                
+                // Crear el widget de búsqueda
+                if (window.PythonAPI) {
+                    window.PythonAPI.crearWidgetBusqueda('python-widget-content');
+                }
+            }
+            
+            function togglePythonWidget() {
+                document.getElementById('python-integration-widget').classList.add('d-none');
+                document.getElementById('python-widget-toggle').classList.remove('d-none');
+            }
+            
+            // Estilos para el enlace de Python
+            document.addEventListener('DOMContentLoaded', function() {
+                const pythonLink = document.querySelector('.python-link');
+                if (pythonLink) {
+                    pythonLink.style.color = '#3776ab';
+                    pythonLink.style.fontWeight = 'bold';
+                }
+            });
+        </script>
+        <th:block th:if="${extraJs}">
+            <script th:each="js : ${extraJs}" th:src="@{'/js/' + ${js}}"></script>
+        </th:block>
+    </div>
+</body>
+</html>

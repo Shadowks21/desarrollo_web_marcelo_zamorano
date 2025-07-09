@@ -1,46 +1,43 @@
 package desarrollo.t4.t4.controllers;
 
-import desarrollo.t4.t4.models.Actividad;
-import desarrollo.t4.t4.services.ApiService;
+import desarrollo.t4.t4.models.Foto;
 import desarrollo.t4.t4.services.AppService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
-@RequestMapping("/java")
 public class AppController {
-
     private final AppService appService;
-    private final ApiService apiService;
-
-    public AppController(AppService appService, ApiService apiService) {
+    public AppController(AppService appService) {
         this.appService = appService;
-        this.apiService = apiService;
     }
 
-    // Página principal - Home con actividades finalizadas
     @GetMapping("/")
     public String index(Model model) {
-        // Obtener actividades finalizadas para el home
-        List<Actividad> actividadesFinalizadas = apiService.getActividadesFinalizadas(10);
-        model.addAttribute("actividades", actividadesFinalizadas);
-        
+        List<Map<String, String>> modelData = appService.getActivitiesData();
+        model.addAttribute("activities", modelData);
         return "index";
     }
 
-    // Página de listado de actividades
-    @GetMapping("/actividades")
-    public String listarActividades(Model model) {
-        return "actividades";
+    @GetMapping("/finishedActivity")
+    public String finishedActivity(Model model) {
+        List<Map<String, String>> modelData = appService.getFinishedActivitiesData();
+        model.addAttribute("activities", modelData);
+        return "finishedActivity";
     }
 
-    // Página de detalle de actividad con puntuación
-    @GetMapping("/actividad/{id}")
-    public String detalleActividad(@PathVariable Integer id, Model model) {
-        model.addAttribute("actividadId", id);
-        return "detalle-actividad";
+    @PostMapping("/rateActivity")
+    public String rateActivity(
+            @RequestParam("actividadId") Long actividadId,
+            @RequestParam("rating") Integer rating
+        ) throws Exception {
+        appService.handleRateActivity(actividadId, rating);
+        return "redirect:/finishedActivity";
     }
 }

@@ -6,17 +6,15 @@ import jakarta.persistence.*;
 @Table(name = "actividad_tema")
 public class ActividadTema {
     
-    @Id
+    private @Id
     @SequenceGenerator(
         name = "actividad_tema_id_seq",
         sequenceName = "actividad_tema_id_seq",
         allocationSize = 1
-    )
-    @GeneratedValue(
+    ) @GeneratedValue(
         strategy = GenerationType.SEQUENCE,
         generator = "actividad_tema_id_seq"
-    )
-    private Integer id;
+    ) Long id;
     
     @Column(nullable = false, length = 255)
     private String tema;
@@ -25,7 +23,7 @@ public class ActividadTema {
     private String glosaOtro;
     
     @Column(name = "actividad_id", nullable = false)
-    private Integer actividadId;
+    private Long actividadId;
     
     @ManyToOne
     @JoinColumn(name = "actividad_id", insertable = false, updatable = false)
@@ -34,15 +32,14 @@ public class ActividadTema {
     // Constructors
     public ActividadTema() {}
 
-    public ActividadTema(String tema, String glosaOtro, Integer actividadId) {
+    public ActividadTema(String tema, String glosaOtro, Long actividadId) {
         this.tema = tema;
         this.glosaOtro = glosaOtro;
         this.actividadId = actividadId;
     }
     
     // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+    public Long getId() { return id; }
     
     public String getTema() { return tema; }
     public void setTema(String tema) { this.tema = tema; }
@@ -50,8 +47,8 @@ public class ActividadTema {
     public String getGlosaOtro() { return glosaOtro; }
     public void setGlosaOtro(String glosaOtro) { this.glosaOtro = glosaOtro; }
     
-    public Integer getActividadId() { return actividadId; }
-    public void setActividadId(Integer actividadId) { this.actividadId = actividadId; }
+    public Long getActividadId() { return actividadId; }
+    public void setActividadId(Long actividadId) { this.actividadId = actividadId; }
     
     public Actividad getActividad() { return actividad; }
     public void setActividad(Actividad actividad) { this.actividad = actividad; }

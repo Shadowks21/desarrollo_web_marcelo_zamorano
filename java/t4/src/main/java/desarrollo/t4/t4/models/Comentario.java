@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Table(name = "comentario")
 public class Comentario {
     
-    @Id
+    private @Id
     @SequenceGenerator(
         name = "comentario_id_seq",
         sequenceName = "comentario_id_seq",
@@ -16,8 +16,7 @@ public class Comentario {
     @GeneratedValue(
         strategy = GenerationType.IDENTITY,
         generator = "comentario_id_seq"
-    )
-    private Integer id;
+    ) Long id;
     
     @Column(nullable = false, length = 200)
     private String nombre;
@@ -52,8 +51,8 @@ public class Comentario {
     }
     
     // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+
+    public Long getId() { return id; }
     
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -69,4 +68,5 @@ public class Comentario {
     
     public Actividad getActividad() { return actividad; }
     public void setActividad(Actividad actividad) { this.actividad = actividad; }
+
 }

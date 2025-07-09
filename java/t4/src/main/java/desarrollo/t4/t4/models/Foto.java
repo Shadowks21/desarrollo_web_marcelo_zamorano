@@ -1,22 +1,21 @@
 package desarrollo.t4.t4.models;
 
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "foto")
 public class Foto {
     
-    @Id
+    private @Id
     @SequenceGenerator(
         name = "foto_id_seq",
         sequenceName = "foto_id_seq",
         allocationSize = 1
-    )
-    @GeneratedValue(
+    ) @GeneratedValue(
         strategy = GenerationType.IDENTITY,
         generator = "foto_id_seq"
-    )
-    private Integer id;
+    ) Long id;
     
     @Column(name = "ruta_archivo", nullable = false, length = 300)
     private String rutaArchivo;
@@ -25,7 +24,7 @@ public class Foto {
     private String nombreArchivo;
     
     @Column(name = "actividad_id", nullable = false)
-    private Integer actividadId;
+    private Long actividadId;
     
     @ManyToOne
     @JoinColumn(name = "actividad_id", insertable = false, updatable = false)
@@ -35,8 +34,8 @@ public class Foto {
     public Foto() {}
     
     // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+
+    public Long getId() { return id; }
     
     public String getRutaArchivo() { return rutaArchivo; }
     public void setRutaArchivo(String rutaArchivo) { this.rutaArchivo = rutaArchivo; }
@@ -44,9 +43,10 @@ public class Foto {
     public String getNombreArchivo() { return nombreArchivo; }
     public void setNombreArchivo(String nombreArchivo) { this.nombreArchivo = nombreArchivo; }
     
-    public Integer getActividadId() { return actividadId; }
-    public void setActividadId(Integer actividadId) { this.actividadId = actividadId; }
+    public Long getActividadId() { return actividadId; }
+    public void setActividadId(Long actividadId) { this.actividadId = actividadId; }
     
     public Actividad getActividad() { return actividad; }
     public void setActividad(Actividad actividad) { this.actividad = actividad; }
+
 }

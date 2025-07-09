@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <th:block th:replace="fragments/head :: head('Estadísticas de Actividades', ${ {'stats-styles.css'} })"></th:block>
+</head>
+<body th:with="navbarTitle='Estadísticas de Actividades', activePage='stats'">
+    <main layout:fragment="content">
+        <div class="grafico-container" id="lineChartContainer">
+            <h2>Cantidad de Actividades por Día</h2>
+            <canvas id="lineChart"></canvas>
+        </div>
+        <div class="grafico-container" id="pieChartContainer">
+            <h2>Total de Actividades por Tipo</h2>
+            <canvas id="pieChart"></canvas>
+        </div>
+        <div class="grafico-container" id="barChartContainer">
+            <h2>Cantidad de Actividades por Mes y Horario</h2>
+            <canvas id="barChart"></canvas>
+        </div>
+        
+        <th:block th:replace="fragments/scripts :: scripts(${ {'stats.js'} })"></th:block>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </main>
+</body>
+</html>

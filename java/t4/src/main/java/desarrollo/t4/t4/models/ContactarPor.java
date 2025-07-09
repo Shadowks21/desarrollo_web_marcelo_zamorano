@@ -6,17 +6,15 @@ import jakarta.persistence.*;
 @Table(name = "contactar_por")
 public class ContactarPor {
     
-    @Id
+    private @Id
     @SequenceGenerator(
         name = "contactar_por_id_seq",
         sequenceName = "contactar_por_id_seq",
         allocationSize = 1
-    )
-    @GeneratedValue(
+    ) @GeneratedValue(
         strategy = GenerationType.SEQUENCE,
         generator = "contactar_por_id_seq"
-    )
-    private Integer id;
+    ) Long id;
     
     @Column(nullable = false, length = 255)
     private String nombre;
@@ -25,7 +23,7 @@ public class ContactarPor {
     private String identificador;
     
     @Column(name = "actividad_id", nullable = false)
-    private Integer actividadId;
+    private Long actividadId;
     
     @ManyToOne
     @JoinColumn(name = "actividad_id", insertable = false, updatable = false)
@@ -35,8 +33,8 @@ public class ContactarPor {
     public ContactarPor() {}
     
     // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+
+    public Long getId() { return id; }
     
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -44,8 +42,8 @@ public class ContactarPor {
     public String getIdentificador() { return identificador; }
     public void setIdentificador(String identificador) { this.identificador = identificador; }
     
-    public Integer getActividadId() { return actividadId; }
-    public void setActividadId(Integer actividadId) { this.actividadId = actividadId; }
+    public Long getActividadId() { return actividadId; }
+    public void setActividadId(Long actividadId) { this.actividadId = actividadId; }
     
     public Actividad getActividad() { return actividad; }
     public void setActividad(Actividad actividad) { this.actividad = actividad; }

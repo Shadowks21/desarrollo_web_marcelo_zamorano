@@ -7,7 +7,7 @@ import java.util.List;
 @Table(name = "region")
 public class Region {
     
-    @Id
+    private @Id
     @SequenceGenerator(
         name = "region_id_seq",
         sequenceName = "region_id_seq",
@@ -16,8 +16,7 @@ public class Region {
     @GeneratedValue(
         strategy = GenerationType.SEQUENCE,
         generator = "region_id_seq"
-    )
-    private Integer id;
+    ) Long id;
     
     @Column(nullable = false, length = 200)
     private String nombre;
@@ -29,8 +28,8 @@ public class Region {
     public Region() {}
     
     // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
+
+    public Long getId() { return id; }
     
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
