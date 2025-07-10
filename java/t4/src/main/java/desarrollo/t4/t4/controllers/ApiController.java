@@ -22,7 +22,7 @@ public class ApiController {
 
         try {
             Long actividadId = Long.valueOf(request.get("actividadId").toString());
-            Integer nota = Integer.valueOf(request.get("nota").toString());
+            int nota = Integer.parseInt(request.get("nota").toString());
 
             // Validar que la nota esté entre 1 y 7
             if (nota < 1 || nota > 7) {

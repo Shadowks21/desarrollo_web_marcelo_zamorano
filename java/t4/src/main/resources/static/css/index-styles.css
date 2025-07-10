@@ -1,18 +1,14 @@
-/* Estilos para index.html - Tema anaranjado coherente */
 
-/* Contenedor principal */
 .content-wrapper {
     background: linear-gradient(135deg, #1a0f0a 0%, #2d1810 100%);
     min-height: 100vh;
     color: #f0f0f0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* Eliminar cualquier margen o padding superior */
     margin-top: 0;
     padding-top: 0;
 }
 
 .main-content {
-    /* Restaurar padding normal ya que no hay navbar fijo */
     padding: 60px 20px;
     max-width: 1200px;
     margin: 0 auto;
