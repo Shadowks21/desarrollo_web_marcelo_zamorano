@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -33,6 +34,8 @@ public class AppService {
     public List<Map<String, String>> getData(List<Actividad> activities) {
         List<Map<String, String>> activitiesData = new ArrayList<>();
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
         for (Actividad activity : activities) {
             Map<String, String> activityData = new HashMap<>();
             activityData.put("id", activity.getId().toString());
@@ -42,14 +45,23 @@ public class AppService {
             activityData.put("region", activity.getComuna().getRegion().getNombre());
             activityData.put("email", activity.getEmail());
             activityData.put("celular", activity.getCelular());
-            activityData.put("diaHoraInicio", activity.getDiaHoraInicio().toString());
-            activityData.put("diaHoraTermino", activity.getDiaHoraTermino() != null ? activity.getDiaHoraTermino().toString() : "N/A");
+
+            // Date and time handling
+            activityData.put("diaHoraInicio", activity.getDiaHoraInicio().format(formatter));
+            activityData.put("diaHoraTermino", activity.getDiaHoraTermino() != null ?
+                    activity.getDiaHoraTermino().format(formatter) : "N/A");
+
             activityData.put("descripcion", activity.getDescripcion() != null ? activity.getDescripcion() : "N/A");
             StringBuilder joinedTemas = new StringBuilder();
 
             // Temas handling
             for (ActividadTema tema : activity.getTemas()) {
-                joinedTemas.append(tema.getTema()).append(", ");
+                String ftema = tema.getTema();
+                if (tema.getTema() == "otro" | tema.getTema() == "Otro") {
+                    ftema = tema.getGlosaOtro();
+                }
+                ftema = ftema.substring(0, 1).toUpperCase() + ftema.substring(1).toLowerCase();
+                joinedTemas.append(ftema).append(", ");
             }
             activityData.put("temas", (joinedTemas.isEmpty()) ? "N/A" : joinedTemas.substring(0, joinedTemas.length() - 2));
             StringBuilder joinedContactarPor = new StringBuilder();
@@ -68,11 +80,13 @@ public class AppService {
             activityData.put("fotos", joinedFotos.isEmpty() ? "N/A" : joinedFotos.substring(0, joinedFotos.length() - 2));
 
             // Notas handling
-            StringBuilder joinedNotas = new StringBuilder();
+            Integer notaSum = 0;
             for (Nota nota : activity.getNotas()) {
-                joinedNotas.append(nota.getNota()).append(", ");
+                notaSum += nota.getNota();
             }
-            activityData.put("notas", joinedNotas.isEmpty() ? "N/A" : joinedNotas.substring(0, joinedNotas.length() - 2));
+            double notaPromedio = activity.getNotas().isEmpty() ? 0.0 : (double) notaSum / activity.getNotas().size();
+            String notaPromedioStr = notaPromedio == 0.0 ? "-" : String.format(Locale.US, "%.1f", notaPromedio);
+            activityData.put("nota", notaPromedioStr);
 
             // Add the activity data to the list
             activitiesData.add(activityData);
@@ -87,10 +101,14 @@ public class AppService {
 
     public List<Map<String, String>> getFinishedActivitiesData() {
         LocalDateTime ahora = LocalDateTime.now();
-        List<Actividad> finishedActivities = activityRepository.findAll().stream()
-                .filter(activity -> activity.getDiaHoraTermino() != null && activity.getDiaHoraTermino().isBefore(ahora))
-                .toList();
-
+        List<Actividad> finishedActivities = new ArrayList<>(activityRepository.findAll().stream()
+                .filter(activity -> activity.getDiaHoraInicio().isBefore(ahora))
+                .toList());
+        try {
+            finishedActivities.sort(Comparator.comparing(Actividad::getId));
+        } catch (Exception e) {
+            System.err.println("Error sorting finished activities: " + e.getMessage());
+        }
         return getData(finishedActivities);
     }
 

@@ -16,6 +16,9 @@ app = Flask(__name__)
 app.secret_key = "s3cr3t_k3y"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16 MB
+# Configuración para recarga automática de templates
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 
 # -- Routes --
@@ -150,3 +153,6 @@ def actividades_por_tipo():
 def actividades_por_comuna():
     data = db.get_activities_by_schedule()
     return jsonify(data)
+
+if __name__ == "__main__":
+    app.run(port=5000)

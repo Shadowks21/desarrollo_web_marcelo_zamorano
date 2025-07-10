@@ -12,9 +12,7 @@
     <main layout:fragment="content">
         <!-- El contenido específico de cada página se insertará aquí -->
     </main>
-    
-    <!-- Widget de integración con Python -->
-    <th:block th:replace="fragments/python-widget :: python-widget"></th:block>
+
     
     <!-- Scripts -->
     <th:block th:replace="fragments/scripts :: scripts(${extraJs})"></th:block>

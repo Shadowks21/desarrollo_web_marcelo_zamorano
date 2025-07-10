@@ -233,14 +233,14 @@ const agregarMensajeError = (ids_mensaje) => {
         const mensaje = ids_mensaje[i][1];
         const id_error_message = document.getElementById(id);
         id_error_message.textContent = "Error: " + mensaje;
-        id_error_message.style.display = 'block';
+        id_error_message.removeAttribute('hidden'); // Mostrar mensaje de error
 
         let id_div_error = document.getElementById('form-error');
         let id_list_error = document.getElementById('error-list');
         let error = document.createElement('li');
         error.innerText = mensaje;
         id_list_error.append(error);
-        id_div_error.style.display = 'block';
+        id_div_error.removeAttribute('hidden'); // Mostrar contenedor de errores
     }
 }
 
@@ -250,6 +250,7 @@ let validation_list = [];
 // Validación final
 const validar = () => {
     // Limpiar mensajes de error previos
+    console.log("validar ejecutada");
     if (validation_list.length > 0) {
         const id_div_error = document.getElementById('form-error');
         const id_list_error = document.getElementById('error-list');
@@ -328,8 +329,10 @@ const validar = () => {
         validation_list.push('error-message-imagen');
     }
     if (validation_list.length > 0) {
+        console.log("Errores de validación encontrados:", validation_list);
         agregarMensajeError(ids_mensaje);
     } else {
+        console.log("No se encontraron errores de validación, mostrando modal de confirmación");
         const modal = document.getElementById('confirm-modal');
         modal.hidden = false;
         modal.scrollIntoView({ behavior: 'smooth', block: 'center'});

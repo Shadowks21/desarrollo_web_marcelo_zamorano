@@ -29,7 +29,7 @@ public class AppController {
     public String finishedActivity(Model model) {
         List<Map<String, String>> modelData = appService.getFinishedActivitiesData();
         model.addAttribute("activities", modelData);
-        return "finishedActivity";
+        return "listado-actividad";
     }
 
     @PostMapping("/rateActivity")

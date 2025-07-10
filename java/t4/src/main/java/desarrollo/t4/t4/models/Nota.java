@@ -14,7 +14,7 @@ public class Nota {
     
     private @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
-    
+
     @Column(name = "actividad_id", nullable = false)
     private Long actividadId;
     
@@ -22,14 +22,15 @@ public class Nota {
     private Integer nota;
     
     @ManyToOne
-    @JoinColumn(name = "actividad_id", insertable = false, updatable = false)
+    @JoinColumn(name = "actividad_id", nullable = false, insertable = false, updatable = false)
     private Actividad actividad;
     
     // Constructors
     public Nota() {}
     
-    public Nota(Long actividadId, Integer nota) {
-        this.actividadId = actividadId;
+    public Nota(Actividad actividad, Integer nota) {
+        this.actividad = actividad;
+        this.actividadId = actividad.getId();
         this.nota = nota;
     }
 
@@ -38,13 +39,13 @@ public class Nota {
     public Long getId() {
         return id;
     }
-    
+
     public Long getActividadId() {
-        return actividadId; 
+        return actividadId;
     }
-    
+
     public void setActividadId(Long actividadId) {
-        this.actividadId = actividadId; 
+        this.actividadId = actividadId;
     }
     
     public Integer getNota() { 
@@ -61,21 +62,6 @@ public class Nota {
     
     public void setActividad(Actividad actividad) { 
         this.actividad = actividad; 
-    }
-
-    @Repository
-    public static interface NotaRepository extends JpaRepository<Nota, Integer> {
-
-        // Obtener todas las notas de una actividad
-        List<Nota> findByActividadId(Integer actividadId);
-
-        // Calcular promedio de notas para una actividad
-        @org.springframework.data.jpa.repository.Query("SELECT AVG(n.nota) FROM Nota n WHERE n.actividadId = :actividadId")
-        Double findPromedioByActividadId(@Param("actividadId") Integer actividadId);
-
-        // Contar total de notas para una actividad
-        @Query("SELECT COUNT(n) FROM Nota n WHERE n.actividadId = :actividadId")
-        Long countByActividadId(@Param("actividadId") Integer actividadId);
     }
 
 }

@@ -1,0 +1,44 @@
+/* Estilos globales para eliminar espacios en blanco */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+    margin: 0;
+    padding: 0;
+}
+
+/* Eliminar espacios entre navbar y contenido */
+main {
+    margin: 0;
+    padding: 0;
+}
+
+.content-wrapper {
+    margin: 0;
+    padding: 0;
+}
+
+/* Asegurar que no haya espacios en blanco */
+.navbar + main {
+    margin-top: 0;
+}
+
+/* Eliminar cualquier margen o padding que pueda crear espacios */
+.navbar {
+    margin-bottom: 0;
+}
+
+/* Asegurar que el content-wrapper se pegue directamente al navbar */
+.content-wrapper {
+    margin-top: 0;
+    padding-top: 0;
+}

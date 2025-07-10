@@ -10,7 +10,13 @@
 			],
 			"group": "build",
 			"isBackground": true,
-			"problemMatcher": []
+			"problemMatcher": [],
+			"options": {
+				"env": {
+					"FLASK_ENV": "development",
+					"FLASK_DEBUG": "1"
+				}
+			}
 		}
 	]
 }

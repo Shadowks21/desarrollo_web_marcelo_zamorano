@@ -1,30 +1,24 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<body>
-    <!-- Barra de navegación -->
-    <nav class="navbar" th:fragment="navbar(navbarTitle, activePage)">
-        <div class="navbar-flex">
-            <span class="navbar-title" th:text="${navbarTitle}">Título</span>
-            <ul class="navbar-list">
-                <li th:if="${activePage != 'inicio'}">
-                    <a th:href="@{/}">Inicio</a>
-                </li>
-                <li th:if="${activePage != 'agregar-actividad'}">
-                    <a th:href="@{/agregar-actividad}">Agregar actividad</a>
-                </li>
-                <li th:if="${activePage != 'listar'}">
-                    <a th:href="@{/actividades}">Ver actividades</a>
-                </li>
-                <li th:if="${activePage != 'stats'}">
-                    <a th:href="@{/estadisticas}">Ver estadísticas</a>
-                </li>
-                <li>
-                    <a href="http://localhost:5000/" target="_blank" class="python-link">
-                        <i class="fab fa-python"></i> Python App
-                    </a>
-                </li>
-            </ul>
+
+<th:block th:fragment="navbar(siteName, activePage)">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-menu">
+                <a th:href="@{/}" class="nav-link" th:classappend="${activePage == 'inicio'} ? 'active' : ''">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+                <a th:href="@{/finishedActivity}" class="nav-link" th:classappend="${activePage == 'valorar'} ? 'active' : ''">
+                    <i class="fas fa-star"></i>
+                    <span>Valorar</span>
+                </a>
+                <a th:href="@{http://localhost:5000/}" class="nav-link">
+                    <i class="fab fa-python"></i> Flask APP
+                </a>
+            </div>
         </div>
     </nav>
-</body>
+</th:block>
+
 </html>

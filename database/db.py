@@ -1,5 +1,4 @@
 import pymysql
-import json
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, func, case
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 
@@ -42,7 +41,7 @@ class Actividad_tema(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     tema = Column(String(255), nullable=False)
     glosa_otro = Column(String(15), nullable=True)
-    actividad_id = Column(Integer, ForeignKey("actividad.id"), primary_key=True)
+    actividad_id = Column(Integer, ForeignKey("actividad.id"), nullable=False)
 
     actividad = relationship("Actividad", back_populates="tema")
 
@@ -83,8 +82,8 @@ class Foto(Base):
 class Comentario(Base):
     __tablename__ = "comentario"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    nombre = Column(String(200), nullable=False)
-    texto = Column(String(500), nullable=False)
+    nombre = Column(String(80), nullable=False)
+    texto = Column(String(300), nullable=False)
     fecha = Column(DateTime, nullable=False, default=func.now())
     actividad_id = Column(Integer, ForeignKey("actividad.id"), nullable=False)
 

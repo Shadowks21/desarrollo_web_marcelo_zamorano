@@ -3,48 +3,108 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
 <head>
-    <th:block th:replace="fragments/head :: head('Listado de Actividades', ${ {'lista-styles.css', 'listado-styles.css'} })"></th:block>
+    <th:block th:replace="fragments/head :: head('Actividades Realizadas', ${ {'global.css', 'navbar.css', 'listado-actividades-styles.css', 'valoracion-modal.css'} })"></th:block>
 </head>
-<body th:with="navbarTitle='Listado de Actividades', activePage='listar'">
+<body>
+    <th:block th:replace="fragments/navbar :: navbar('Actividades recreativas de Chile', 'valorar')"></th:block>
+    
     <main layout:fragment="content">
-        <div th:if="${data and not #lists.isEmpty(data)}">
-            <table style="width: 100%; margin: auto; text-align: center; border-collapse: collapse;" id="activity-table">
-                <thead>
-                    <tr class="head-row">
-                        <th>Inicio</th>
-                        <th>Término</th>
-                        <th>Comuna</th>
-                        <th>Sector</th>
-                        <th>Tema</th>
-                        <th>Nombre Organizador</th>
-                        <th>Total Fotos</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="actividad : ${data}" 
-                        class="data-row" 
-                        th:data-id="${actividad.id}" 
-                        th:onclick="'window.location=\'' + @{/actividad/{id}(id=${actividad.id})} + '\''">
-                        <td th:text="${actividad.fechaInicio}">Fecha inicio</td>
-                        <td th:text="${actividad.fechaTermino}">Fecha término</td>
-                        <td th:text="${actividad.comuna}">Comuna</td>
-                        <td th:text="${actividad.sector}">Sector</td>
-                        <td th:text="${actividad.tema}">Tema</td>
-                        <td th:text="${actividad.nombreOrganizador}">Organizador</td>
-                        <td th:text="${actividad.totalFotos}">Total fotos</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div>
-                <a th:if="${page > 1}" 
-                   th:href="@{/actividades(page=${page - 1})}">Anterior</a>
-                <span th:text="'Página ' + ${page} + ' de ' + ${totalPages}">Página X de Y</span>
-                <a th:if="${page < totalPages}" 
-                   th:href="@{/actividades(page=${page + 1})}">Siguiente</a>
+        <div class="content-wrapper">
+            <div class="main-content">
+                <h1>
+                    <i class="fas fa-tasks"></i>
+                    Actividades Realizadas
+                </h1>
+
+                <div th:if="${activities != null and not #lists.isEmpty(activities)}" class="activities-container">
+                    <div class="activities-grid">
+                        <div th:each="actividad : ${activities}"
+                             class="activity-card"
+                             th:data-id="${actividad['id']}">
+                            <div class="card-header">
+                                <span class="activity-id">ID: <span th:text="${actividad['id'] ?: 'N/A'}">123</span></span>
+                            </div>
+                            <div class="card-body">
+                                <div class="activity-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span class="detail-label">Fecha Inicio:</span>
+                                        <span class="detail-value" th:text="${actividad['diaHoraInicio']}">2024-01-15</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span class="detail-label">Sector:</span>
+                                        <span class="detail-value" th:text="${actividad['sector']}">Centro</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-user-alt"></i>
+                                        <span class="detail-label">Nombre:</span>
+                                        <span class="detail-value" th:text="${actividad['nombre']}">Organizador</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-tag"></i>
+                                        <span class="detail-label">Tema:</span>
+                                        <span class="detail-value" th:text="${actividad['temas']}">Educación</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-sticky-note"></i>
+                                        <span class="detail-label">Nota Promedio:</span>
+                                        <span class="detail-value nota-promedio" th:text="${actividad['nota'] ?: 'Sin valoraciones'}" th:data-id="${actividad['id']}">Sin valoraciones</span>
+                                    </div>
+                                </div>
+                                <div class="card-actions">
+                                    <button class="btn btn-primary btn-sm btn-valorar"
+                                            th:data-id="${actividad['id']}"
+                                            th:data-nombre="${actividad['nombre']}">
+                                        <i class="fas fa-star"></i>
+                                        Valorar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paginación -->
+                    <div class="pagination-container">
+                        <nav class="pagination-nav">
+                            <a th:if="${page > 1}"
+                               th:href="@{/finishedActivity(page=${page - 1})}"
+                               class="pagination-btn prev-btn">
+                                <i class="fas fa-chevron-left"></i>
+                                Anterior
+                            </a>
+
+                            <div class="page-info">
+                                <span class="page-text">
+                                    Página <strong th:text="${page ?: 1}">1</strong> de <strong th:text="${totalPages ?: 1}">1</strong>
+                                </span>
+                            </div>
+
+                            <a th:if="${page < totalPages}"
+                               th:href="@{/finishedActivity(page=${page + 1})}"
+                               class="pagination-btn next-btn">
+                                Siguiente
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <div th:unless="${activities != null and not #lists.isEmpty(activities)}" class="no-activities">
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No hay actividades realizadas</h3>
+                        <p>Aún no tienes actividades completadas para mostrar.</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <p th:unless="${data and not #lists.isEmpty(data)}">No hay actividades registradas.</p>
+
+        <!-- Incluir el modal como fragmento -->
+        <th:block th:replace="~{fragments/valoracion-modal :: valoracion-modal}"></th:block>
     </main>
+
+    <!-- Script del modal -->
+    <script th:src="@{/js/valoracion-modal.js}"></script>
 </body>
 </html>

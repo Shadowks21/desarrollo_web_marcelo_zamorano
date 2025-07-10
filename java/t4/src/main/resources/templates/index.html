@@ -1,55 +1,31 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
 <head>
-    <th:block th:replace="fragments/head :: head('Inicio - Java', ${ {} })"></th:block>
+    <th:block th:replace="fragments/head :: head('Inicio - Actividades Recreativas', ${ {'global.css', 'navbar.css', 'index-styles.css'} })"></th:block>
 </head>
 <body>
     <th:block th:replace="fragments/navbar :: navbar('Actividades recreativas de Chile', 'inicio')"></th:block>
     
-    <main>
-        <div class="container mt-5">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="text-center mb-4">¡Bienvenido a la aplicación Java!</h1>
-                    <p class="text-center">Esta es la aplicación Java Spring Boot corriendo en el puerto 8080.</p>
-                </div>
-            </div>
-            
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fas fa-list"></i> Ver Actividades
-                            </h5>
-                            <p class="card-text">Explora todas las actividades registradas en el sistema.</p>
-                            <a th:href="@{/actividades}" class="btn btn-primary">Ver Actividades</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fas fa-search"></i> Buscar Actividades
-                            </h5>
-                            <p class="card-text">Utiliza filtros avanzados para encontrar actividades específicas.</p>
-                            <a th:href="@{/buscar}" class="btn btn-success">Buscar Actividades</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <i class="fab fa-python"></i> Integración con Python
-                            </h5>
-                            <p class="card-text">Esta aplicación puede integrarse con la aplicación Python para una experiencia híbrida.</p>
-                            <a href="http://localhost:3000/" target="_blank" class="btn btn-info">
-                                <i class="fab fa-python"></i> Ir a Python App
+    <main layout:fragment="content">
+        <div class="content-wrapper">
+            <div class="main-content">
+                <h1>
+                    <i class="fas fa-star"></i>
+                    Actividades Recreativas de Chile
+                </h1>
+
+                <div class="welcome-container">
+                    <div class="welcome-card">
+                        <h2>¡Bienvenido!</h2>
+                        <p>
+                            Valora las mejores actividades recreativas de Chile.
+                        </p>
+                        <div class="action-buttons">
+                            <a href="/finishedActivity" class="action-btn">
+                                <i class="fas fa-star"></i>
+                                Valorar Actividades
                             </a>
                         </div>
                     </div>
@@ -57,8 +33,5 @@
             </div>
         </div>
     </main>
-    
-    <th:block th:replace="fragments/python-widget :: python-widget"></th:block>
-    <th:block th:replace="fragments/scripts :: scripts(${ {} })"></th:block>
 </body>
 </html>

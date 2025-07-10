@@ -148,6 +148,8 @@ CREATE TABLE IF NOT EXISTS `tarea2`.`comentario` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+DROP TABLE IF EXISTS `tarea2`.`comentario`;
+
 -- -----------------------------------------------------
 -- Table `tarea2`.`nota`
 -- -----------------------------------------------------
