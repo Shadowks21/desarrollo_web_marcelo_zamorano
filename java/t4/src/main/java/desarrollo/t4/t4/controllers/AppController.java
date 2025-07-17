@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class AppController {
@@ -26,7 +27,7 @@ public class AppController {
     @GetMapping("/")
     public String index(Model model) {
         List<Map<String, String>> modelData = appService.getActivitiesData();
-        model.addAttribute("activities", modelData);
+        model.addAttribute("activities", modelData.stream().limit(5).collect(Collectors.toList()));
         return "index";
     }
 

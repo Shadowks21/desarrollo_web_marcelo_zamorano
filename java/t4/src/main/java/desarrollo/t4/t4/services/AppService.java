@@ -19,6 +19,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.StreamSupport.stream;
+
 @Service
 @Transactional
 public class AppService {
@@ -91,7 +93,7 @@ public class AppService {
             // Temas handling
             for (ActividadTema tema : activity.getTemas()) {
                 String ftema = tema.getTema();
-                if (tema.getTema() == "otro" | tema.getTema() == "Otro") {
+                if (ftema != null && ftema.equalsIgnoreCase("otro")) {
                     ftema = tema.getGlosaOtro();
                 }
                 ftema = ftema.substring(0, 1).toUpperCase() + ftema.substring(1).toLowerCase();
@@ -109,7 +111,7 @@ public class AppService {
 
             // Fotos handling
             for (Foto foto : activity.getFotos()) {
-                joinedFotos.append(foto.getRutaArchivo()).append(", ");
+                joinedFotos.append(foto.getNombreArchivo()).append(", ");
             }
             activityData.put("fotos", joinedFotos.isEmpty() ? "N/A" : joinedFotos.substring(0, joinedFotos.length() - 2));
 
@@ -130,6 +132,7 @@ public class AppService {
 
     public List<Map<String, String>> getActivitiesData() {
         List<Actividad> activities = activityRepository.findAll();
+        activities.sort(Comparator.comparing(Actividad::getDiaHoraInicio));
         return getData(activities);
     }
 
@@ -149,6 +152,7 @@ public class AppService {
                     result.put("total", entry.getValue());
                     return result;
                 })
+                .sorted(Comparator.comparing(entry -> entry.get("fecha").toString()))
                 .collect(Collectors.toList());
     }
 

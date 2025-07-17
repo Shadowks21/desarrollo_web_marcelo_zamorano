@@ -311,3 +311,326 @@
 .btn-login:hover {
     background-color: #218838;
 }
+
+/* Sección de actividades */
+.activities-section {
+    margin-top: 80px;
+}
+
+.activities-section h2 {
+    color: #ff8c00;
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 40px;
+    text-shadow: 1px 1px 2px rgba(255, 140, 0, 0.2);
+}
+
+.activities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.activity-card {
+    background: linear-gradient(135deg, #2d1810 0%, #3d2418 100%);
+    border: 2px solid #ff8c00;
+    border-radius: 16px;
+    box-shadow: 0 8px 16px rgba(255, 140, 0, 0.2);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    min-width: 340px; /* Acomodar la imagen de 320px + padding */
+}
+
+.activities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+    justify-items: center;
+}
+
+.activity-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(255, 140, 0, 0.3);
+    border-color: #ffa500;
+}
+
+.activity-card:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff8c00, #ffa500);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px 0 20px;
+    margin-bottom: 15px;
+}
+
+.activity-id {
+    background: rgba(255, 140, 0, 0.1);
+    color: #ff8c00;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 140, 0, 0.3);
+}
+/* Agregar estilos para las fotos de actividades */
+.activity-photo {
+    width: 320px;
+    height: 240px;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 0 auto 15px auto;
+    position: relative;
+    background: rgba(255, 140, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.activity-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border: 2px solid rgba(255, 140, 0, 0.2);
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.activity-photo:hover .activity-image {
+    transform: scale(1.05);
+}
+
+/* Responsive para fotos */
+@media (max-width: 768px) {
+    .activity-photo {
+        width: 280px;
+        height: 210px;
+    }
+    .activity-card {
+        min-width: 300px;
+    }
+
+    .activities-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .activity-photo {
+        width: 240px;
+        height: 180px;
+    }
+
+    .activity-card {
+        min-width: 260px;
+    }
+}
+
+.card-body {
+    padding: 0 20px 20px 20px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px 0 20px;
+    margin-bottom: 15px;
+}
+
+.activity-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 140, 0, 0.1);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item i {
+    color: #ffa500;
+    width: 16px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.detail-label {
+    color: #d4d4d4;
+    font-weight: 500;
+    min-width: 90px;
+    font-size: 0.95rem;
+}
+
+.detail-value {
+    color: #f0f0f0;
+    font-weight: 600;
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+/* Responsive para actividades */
+@media (max-width: 768px) {
+    .activities-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .activities-section h2 {
+        font-size: 1.6rem;
+    }
+
+    .card-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+}
+
+/* Botón "Explora más actividades" */
+.explore-more-btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 400px;
+    padding: 20px;
+}
+
+.explore-more-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+    color: #1a0f0a;
+    text-decoration: none;
+    padding: 40px 30px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 16px rgba(255, 140, 0, 0.3);
+    border: 3px solid transparent;
+    text-align: center;
+    min-width: 200px;
+}
+
+.explore-more-btn:hover {
+    background: linear-gradient(135deg, #ffa500 0%, #ffb347 100%);
+    transform: translateY(-5px);
+    color: #0d1117;
+    text-decoration: none;
+    box-shadow: 0 12px 24px rgba(255, 140, 0, 0.4);
+    border-color: #ff8c00;
+}
+
+.explore-more-btn .fas:first-child {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.explore-more-btn span {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 10px 0;
+}
+
+.explore-more-btn .fas:last-child {
+    font-size: 1.5rem;
+    margin-top: 10px;
+    transition: transform 0.3s ease;
+}
+
+.explore-more-btn:hover .fas:last-child {
+    transform: translateX(5px);
+}
+
+/* Ajustar la tarjeta que contiene el botón */
+.activity-card-with-button {
+    background: linear-gradient(135deg, #3d2418 0%, #4d2e20 100%);
+    border: 3px dashed #ff8c00;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(255, 140, 0, 0.2);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    min-width: 360px;
+    min-height: 400px;
+}
+
+.activity-card-with-button:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(255, 140, 0, 0.3);
+    border-color: #ffa500;
+}
+
+.activity-card-with-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 40%, rgba(255, 140, 0, 0.05) 50%, transparent 60%);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Responsive para el botón */
+@media (max-width: 768px) {
+    .explore-more-btn {
+        padding: 30px 20px;
+        font-size: 1rem;
+        min-width: 180px;
+    }
+
+    .explore-more-btn span {
+        font-size: 1.1rem;
+    }
+
+    .explore-more-btn .fas:first-child {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .explore-more-btn {
+        padding: 25px 15px;
+        font-size: 0.9rem;
+        min-width: 160px;
+    }
+
+    .explore-more-btn span {
+        font-size: 1rem;
+    }
+}
