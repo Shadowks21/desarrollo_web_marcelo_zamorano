@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <!-- Fragmento del botón flotante -->
+    <div th:fragment="admin-float-btn(forWhat)" class="admin-float-btn">
+        <button th:if="${forWhat == 'Administrar'}" id="adminBtn" class="btn-admin" onclick="showAdminLogin()">
+            <i class="fas fa-cog" ></i> Administrar
+        </button>
+        <button th:if="${forWhat == 'Inicio'}" id="adminBtn" class="btn-admin" onclick="window.location.href='/'">
+            <i class="fas fa-home" ></i> Inicio
+        </button>
+    </div>
+
+</body>
+</html>

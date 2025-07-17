@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <title>Administración de Fotos</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" th:href="@{/css/global.css}" />
+  <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+  <link rel="stylesheet" th:href="@{/css/index-styles.css}" />
+  <link rel="stylesheet" th:href="@{/css/admin-fotos-styles.css}" />
+  <link rel="stylesheet" th:href="@{/css/foto-modal.css}" />
+  <link
+          href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Roboto&display=swap"
+          rel="stylesheet"
+  />
+  <link
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          rel="stylesheet"
+  />
+</head>
+<body>
+  <!-- Navbar -->
+  <div th:replace="~{fragments/navbar :: navbar('Admin Fotos', 'admin')}"></div>
+
+  <div class="content-wrapper">
+    <div class="main-content">
+      <!-- Título principal -->
+      <h1>
+        <i class="fas fa-images"></i>
+        Administración de Fotos
+      </h1>
+
+      <!-- Estadísticas -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <span class="stat-number" id="totalFotos" th:text="${fotos.size()}">0</span>
+          <div class="stat-label">Fotos Totales</div>
+        </div>
+      </div>
+
+      <!-- Lista de fotos -->
+      <div id="fotosContainer">
+        <div th:if="${not #lists.isEmpty(fotos)}" class="fotos-grid" id="fotosGrid">
+          <div th:each="foto : ${fotos}" class="foto-card" th:id="'foto-' + ${foto.id}">
+            <!-- Imagen de la foto -->
+            <img
+                    th:src="@{'/uploads/' + ${foto.nombreArchivo}}"
+                    th:alt="${foto.rutaArchivo} + ${foto.nombreArchivo}"
+                    class="foto-imagen"
+            />
+
+            <!-- Información de la foto -->
+            <div class="foto-info">
+              <h3 th:text="${foto.getActividad().getNombre()}">Nombre del organizador</h3>
+              <h3 th:text="${foto.getActividad().getEmail()}">Email del organizador</h3>
+
+              <div class="foto-details">
+                <strong>ID:</strong> <span th:text="${foto.id}">1</span>
+              </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="foto-actions">
+              <button type="button"
+                      class="btn btn-info btn-ver"
+                      th:data-foto-id="${foto.id}"
+                      th:data-nombre-archivo="${foto.nombreArchivo}"
+                      th:data-actividad="${foto.actividad.getNombre()}"
+                      th:data-email="${foto.actividad.getEmail()}"
+                      onclick="verFotoFromButton(this)">
+                <i class="fas fa-eye"></i> Ver
+              </button>
+
+              <button type="button"
+                      class="btn-delete"
+                      th:data-foto-id="${foto.id}"
+                      th:data-foto-nombre="${foto.nombreArchivo}"
+                      onclick="AdminFotos.confirmDelete(this.dataset.fotoId, this.dataset.fotoNombre)">
+                <i class="fas fa-trash"></i>
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado vacío -->
+        <div th:if="${#lists.isEmpty(fotos)}" class="empty-state" id="emptyState">
+          <i class="fas fa-images"></i>
+          <h3>No hay fotos disponibles</h3>
+          <p>Aún no se han subido fotos al sistema.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación -->
+  <div id="deleteModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h3>
+      <p id="deleteMessage">¿Estás seguro de que deseas eliminar esta foto?</p>
+
+      <div class="message-input-group">
+        <label for="deleteReasonInput">Motivo de eliminación:</label>
+        <textarea
+                id="deleteReasonInput"
+                class="message-input"
+                placeholder="Ingresa el motivo de la eliminación (mínimo 5 caracteres)"
+                maxlength="200"></textarea>
+        <div class="char-counter">
+          <span id="charCount">0</span>/200 caracteres
+        </div>
+        <div class="validation-error" id="messageError"></div>
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="action-btn" onclick="AdminFotos.closeModal()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button type="button" class="btn-delete" id="confirmDeleteBtn" onclick="AdminFotos.deleteFoto()">
+          <span class="loading-spinner"></span>
+          <i class="fas fa-trash"></i> Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div th:replace="~{fragments/foto-modal :: foto-modal}"></div>
+  <div class="home-float-btn">
+    <a href="/" class="btn-home" title="Volver al inicio">
+      <i class="fas fa-home"></i>
+      <span>Inicio</span>
+    </a>
+  </div>
+
+  <div th:replace="~{fragments/admin-button :: admin-float-btn('Inicio')}"></div>
+
+  <!-- Scripts -->
+  <script th:src="@{/js/foto-modal.js}"></script>
+  <script th:src="@{/js/admin-fotos.js}"></script>
+</body>
+</html>

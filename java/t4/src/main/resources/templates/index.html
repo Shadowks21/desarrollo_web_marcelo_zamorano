@@ -3,10 +3,10 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
 <head>
-    <th:block th:replace="fragments/head :: head('Inicio - Actividades Recreativas', ${ {'global.css', 'navbar.css', 'index-styles.css'} })"></th:block>
+    <th:block th:replace="fragments/head :: head('Actividades Recreativas - Inicio', ${ {'global.css', 'navbar.css', 'index-styles.css'} })"></th:block>
 </head>
 <body>
-    <th:block th:replace="fragments/navbar :: navbar('Actividades recreativas de Chile', 'inicio')"></th:block>
+    <th:block th:replace="~{fragments/navbar :: navbar('Actividades recreativas de Chile', 'inicio')}"></th:block>
     
     <main layout:fragment="content">
         <div class="content-wrapper">
@@ -32,6 +32,9 @@
                 </div>
             </div>
         </div>
+        <div th:replace="~{fragments/scripts :: scripts('admin-login-modal.js')}"></div>
+        <div th:replace="~{fragments/admin-button :: admin-float-btn('Administrar')}"></div>
+        <div th:replace="~{fragments/admin-login-modal :: admin-login-modal}"></div>
     </main>
 </body>
 </html>

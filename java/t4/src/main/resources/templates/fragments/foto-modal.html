@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- Modal para visualizar foto en tamaño real -->
+<div th:fragment="foto-modal" class="foto-modal" id="fotoModal">
+    <div class="modal-backdrop" onclick="cerrarModal()"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Foto</h3>
+            <button type="button" class="btn-close" onclick="cerrarModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <img id="modalImage" src="" alt="Foto en tamaño real" class="modal-image">
+            <div class="modal-info">
+                <p><strong>Organizador:</strong> <span id="modalOrganizador"></span></p>
+                <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+                <p><strong>Archivo:</strong> <span id="modalArchivo"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

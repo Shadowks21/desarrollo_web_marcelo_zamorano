@@ -9,6 +9,10 @@
                     <i class="fas fa-home"></i>
                     <span>Inicio</span>
                 </a>
+                <a th:href="@{/agregarActividad}" class="nav-link" th:classappend="${activePage == 'Agregar actividad'} ? 'active' : ''">
+                    <i class="fas fa-calendar"></i>
+                    <span>Agregar actividad</span>
+                </a>
                 <a th:href="@{/finishedActivity}" class="nav-link" th:classappend="${activePage == 'valorar'} ? 'active' : ''">
                     <i class="fas fa-star"></i>
                     <span>Valorar</span>

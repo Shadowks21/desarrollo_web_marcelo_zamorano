@@ -1,20 +1,25 @@
 package desarrollo.t4.t4.services;
 
 import desarrollo.t4.t4.models.*;
-import desarrollo.t4.t4.repositories.ActividadRepository;
-import desarrollo.t4.t4.repositories.NotaRepository;
-import org.springframework.data.domain.PageRequest;
+import desarrollo.t4.t4.repositories.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
+@Transactional
 public class AppService {
 
     private final String pathStatic;
@@ -23,9 +28,31 @@ public class AppService {
 
     private final NotaRepository notaRepository;
 
-    public AppService(ActividadRepository activityRepository, NotaRepository notaRepository) throws IOException {
+    private final ComunaRepository comunaRepository;
+
+    private final ActividadTemaRepository actividadTemaRepository;
+
+    private final ComentarioRepository comentarioRepository;
+
+    private final ContactarPorRepository contactarPorRepository;
+
+    private final FotoRepository fotoRepository;
+
+    public AppService(ActividadRepository activityRepository,
+                      ActividadTemaRepository actividadTemaRepository,
+                      ComentarioRepository comentarioRepository,
+                      ContactarPorRepository contactarPorRepository,
+                      FotoRepository fotoRepository,
+                      NotaRepository notaRepository,
+                      ComunaRepository comunaRepository) throws IOException {
+
         this.activityRepository = activityRepository;
         this.notaRepository = notaRepository;
+        this.comunaRepository = comunaRepository;
+        this.actividadTemaRepository = actividadTemaRepository;
+        this.comentarioRepository = comentarioRepository;
+        this.contactarPorRepository = contactarPorRepository;
+        this.fotoRepository = fotoRepository;
         Path staticDir = Paths.get(ResourceUtils.getFile("classpath:static").getAbsolutePath());
         this.pathStatic = staticDir.toString();
         System.out.println("Static path resolved to: " + this.pathStatic);
@@ -41,7 +68,13 @@ public class AppService {
             activityData.put("id", activity.getId().toString());
             activityData.put("nombre", activity.getNombre());
             activityData.put("sector", activity.getSector());
-            activityData.put("comuna", activity.getComuna().getNombre());
+
+            if (activity.getComuna() != null) {
+                activityData.put("comuna", activity.getComuna().getNombre());
+            } else {
+                activityData.put("comuna", "N/A");
+            }
+
             activityData.put("region", activity.getComuna().getRegion().getNombre());
             activityData.put("email", activity.getEmail());
             activityData.put("celular", activity.getCelular());
@@ -110,6 +143,243 @@ public class AppService {
             System.err.println("Error sorting finished activities: " + e.getMessage());
         }
         return getData(finishedActivities);
+    }
+
+    public Map<String, Object> validateForm(
+            String region, String comuna, String sector, String nombre, String email, String telefono,
+            Map<String, String> contactos, LocalDateTime fechaInicio, LocalDateTime fechaFin,
+            String descripcion, String ftema, List<MultipartFile> fotos) {
+
+        Map<String, Object> validation = new HashMap<>();
+        List<String> errors = new ArrayList<>();
+        // Validar región
+        if (region == null || region.trim().isEmpty()) {
+            errors.add("Seleccione una región");
+        }
+
+        // Validar comuna
+        if (comuna == null || comuna.trim().isEmpty()) {
+            errors.add("Seleccione una comuna");
+        }
+
+        // Validar sector (opcional pero con formato)
+        if (sector != null && !sector.trim().isEmpty()) {
+            if (!sector.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s.,()-]+$")) {
+                errors.add("El sector contiene caracteres no válidos");
+            }
+        }
+
+        // Validar nombre (obligatorio)
+        if (nombre == null || nombre.trim().isEmpty()) {
+            errors.add("El nombre es obligatorio");
+        } else if (!nombre.matches("^[a-zA-ZñÑáéíóúÁÉÍÓÚ\\s]+$")) {
+            errors.add("El nombre solo puede contener letras y espacios");
+        }
+
+        // Validar email
+        if (email == null || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+            errors.add("Ingrese un email válido");
+        }
+
+        // Validar teléfono (opcional pero con formato +XXX.XXXXXXXX)
+        if (telefono != null && !telefono.trim().isEmpty()) {
+            if (!telefono.matches("^\\+\\d{1,3}\\.\\d{8,}$")) {
+                errors.add("Formato de teléfono: +XXX.XXXXXXXX");
+            }
+        }
+
+        // Validar fecha de inicio
+        if (fechaInicio == null) {
+            errors.add("La fecha de inicio es obligatoria");
+        } else if (fechaInicio.isBefore(LocalDateTime.now())) {
+            errors.add("La fecha debe ser futura");
+        }
+
+        // Validar fecha de fin (opcional)
+        if (fechaFin != null && fechaInicio != null) {
+            if (fechaFin.isBefore(fechaInicio)) {
+                errors.add("La fecha de fin debe ser posterior al inicio");
+            }
+        }
+
+        // Validar descripción (opcional pero con formato)
+        if (descripcion != null && !descripcion.trim().isEmpty()) {
+            if (!descripcion.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s.,!?¿¡()\"\\-]+$")) {
+                errors.add("La descripción contiene caracteres no válidos");
+            }
+        }
+
+        // Validar tema
+        if (ftema == null || ftema.trim().isEmpty()) {
+            errors.add("Seleccione un tema");
+        } else {
+            if (!ftema.matches("^[a-zA-ZñÑáéíóúÁÉÍÓÚ\\s]+$")) {
+                errors.add("El tema especificado solo puede contener letras y espacios");
+            }
+        }
+
+        // Validar fotos
+        if (fotos == null || fotos.isEmpty()) {
+            errors.add("Seleccione al menos una imagen");
+        } else {
+            if (fotos.size() > 5) {
+                errors.add("Máximo 5 imágenes permitidas");
+            }
+
+            String[] validExtensions = {"jpg", "jpeg", "png"};
+            long maxSize = 5 * 1024 * 1024; // 5MB
+
+            for (MultipartFile foto : fotos) {
+                if (foto.isEmpty()) continue;
+
+                String filename = foto.getOriginalFilename();
+                if (filename != null) {
+                    String extension = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
+                    boolean validExtension = Arrays.asList(validExtensions).contains(extension);
+
+                    if (!validExtension) {
+                        errors.add("Solo se permiten archivos JPG, JPEG y PNG");
+                        break;
+                    }
+
+                    if (foto.getSize() > maxSize) {
+                        errors.add("El tamaño máximo por imagen es 5MB");
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Preparar resultado
+        validation.put("isValid", errors.isEmpty());
+        validation.put("errors", errors);
+        validation.put("errorMessage", errors.isEmpty() ? null : String.join(", ", errors));
+
+        return validation;
+    }
+
+    public void handleAddActivity(String region, String comuna, String sector, String nombre, String email,
+                                   String telefono, List<String> contactoTipo, List<String> contactoID, String fecha_inicio_str,
+                                   String fecha_fin_str, String descripcion, String tema, String temaOtro,
+                                   List<MultipartFile> fotos) throws Exception {
+
+        try {
+            Map<String, String> contactos = new HashMap<>();
+            for (int i = 0; i < contactoTipo.size(); i++) {
+                contactos.put(contactoTipo.get(i), contactoID.get(i));
+            }
+            LocalDateTime fechaInicio = LocalDateTime.parse(fecha_inicio_str);
+            LocalDateTime fechaFin = fecha_fin_str != null && !fecha_fin_str.isEmpty() ?
+                    LocalDateTime.parse(fecha_fin_str) : null;
+            String ftema = !Objects.equals(tema, "otro") ? tema : temaOtro;
+
+            Map<String, Object> validation = validateForm(
+                    region, comuna, sector, nombre, email, telefono,
+                    contactos, fechaInicio, fechaFin,
+                    descripcion, ftema, fotos
+            );
+
+            if (!(boolean) validation.get("isValid")) {
+                throw new Exception((String) validation.get("errorMessage"));
+            }
+            Comuna comunaEntity = comunaRepository.findById(Long.parseLong(comuna))
+                    .orElseThrow(() -> new Exception("Comuna ID not found: " + comuna));
+            // 1. Crear la Actividad principal
+            Actividad actividad = new Actividad();
+            actividad.setNombre(nombre);
+            actividad.setEmail(email);
+            actividad.setCelular(telefono);
+            actividad.setSector(sector);
+            actividad.setDiaHoraInicio(fechaInicio);
+            actividad.setDiaHoraTermino(fechaFin);
+            actividad.setDescripcion(descripcion);
+            actividad.setComuna(comunaEntity);
+            actividad.setComunaId(comunaEntity.getId());
+            actividad = activityRepository.save(actividad);
+            activityRepository.flush(); // Ensure the activity is saved before proceeding
+
+            // 2. Crear y asociar las fotos
+            List<Foto> fotosList = new ArrayList<>();
+            for (MultipartFile foto : fotos) {
+                String _originalFilename = foto.getOriginalFilename();
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                md.update(_originalFilename.getBytes("UTF-8"));
+                byte[] hash = md.digest();
+                String _filename;
+                try (Formatter formatter = new Formatter()) {
+                    for (byte b : hash) {
+                        formatter.format("%02x", b);
+                    }
+                    _filename = formatter.toString();
+                }
+
+                String _extension = _originalFilename.substring(_originalFilename.lastIndexOf('.') + 1).toLowerCase();
+                if (!_extension.matches("jpg|jpeg|png|gif")) {
+                    throw new IllegalArgumentException("Invalid file extension: " + _extension);
+                }
+
+                String imgFilename = _filename + "." + _extension;
+                String relativePathImg = "/uploads/" + imgFilename;
+                String finalPath = pathStatic + relativePathImg;
+
+                System.out.println("Final image path: " + finalPath);
+
+                // Ensure the uploads directory exists
+                Path directoryPath = Paths.get(pathStatic + "/uploads");
+                if (!Files.exists(directoryPath)) {
+                    Files.createDirectories(directoryPath);
+                    System.out.println("Uploads directory created.");
+                }
+
+                // Save the image file
+                Path path = Paths.get(finalPath);
+                try (InputStream inputStream = foto.getInputStream()) {
+                    Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println("File successfully saved at: " + path.toAbsolutePath());
+                } catch (IOException e) {
+                    throw new RuntimeException("Failed to save the image file.", e);
+                }
+
+                Foto fotoEntity = new Foto();
+                fotoEntity.setRutaArchivo(relativePathImg);
+                fotoEntity.setNombreArchivo(imgFilename);
+                fotoEntity.setActividad(actividad);
+                fotoEntity.setActividadId(actividad.getId());
+                fotosList.add(fotoEntity);
+            }
+            fotoRepository.saveAll(fotosList);
+            actividad.setFotos(fotosList);
+
+            // 3. Crear y asociar los temas
+            List<ActividadTema> temasList = new ArrayList<>();
+            ActividadTema actividadTema = new ActividadTema();
+            actividadTema.setTema(tema);
+            if (tema.equals("otro")) {
+                actividadTema.setGlosaOtro(temaOtro);
+            }
+            actividadTema.setActividad(actividad);
+            actividadTema.setActividadId(actividad.getId());
+            actividadTemaRepository.save(actividadTema);
+            temasList.add(actividadTema);
+            actividad.setTemas(temasList);
+
+            // 4. Crear y asociar los contactos
+            List<ContactarPor> contactosList = new ArrayList<>();
+            for (Map.Entry<String, String> contacto : contactos.entrySet()) {
+                ContactarPor contactarPor = new ContactarPor();
+                contactarPor.setNombre(contacto.getKey());
+                contactarPor.setIdentificador(contacto.getValue());
+                contactarPor.setActividad(actividad);
+                contactarPor.setActividadId(actividad.getId());
+                contactosList.add(contactarPor);
+            }
+            contactarPorRepository.saveAll(contactosList);
+            actividad.setContactarPor(contactosList);
+
+
+        } catch (Exception e) {
+            throw new Exception("Error while adding activity: " + e.getMessage(), e);
+        }
     }
 
     public void handleRateActivity(Long actividadId, Integer rating) throws Exception {

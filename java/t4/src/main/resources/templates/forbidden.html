@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <title>Acceso Prohibido</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/index-styles.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar :: navbar('Acceso Prohibido', 'forbidden')}"></div>
+
+    <div class="content-wrapper">
+      <main class="main-content">
+        <h1><i class="fas fa-ban"></i>Acceso Denegado</h1>
+        
+        <div class="welcome-container">
+          <div class="welcome-card">
+            <div class="feature-icon">
+              <i class="fas fa-lock"></i>
+            </div>
+            <h2>Acceso Prohibido</h2>
+            <p>Lo sentimos, no tienes permisos para acceder a esta página.</p>
+            
+            <div class="action-buttons">
+              <a th:href="@{/}" class="action-btn">
+                <i class="fas fa-home"></i>
+                Volver al inicio
+              </a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <div th:replace="~{fragments/scripts :: scripts(null)}"></div>
+  </body>
+</html>
