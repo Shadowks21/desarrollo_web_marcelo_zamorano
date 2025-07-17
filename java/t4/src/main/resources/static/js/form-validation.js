@@ -19,15 +19,6 @@ class FormValidator {
     }
 
     setupEventListeners() {
-        // Tema otro
-        const temaSelect = document.getElementById('tema');
-        const temaOtroDiv = document.getElementById('tema-otro-div');
-
-        if (temaSelect && temaOtroDiv) {
-            temaSelect.addEventListener('change', (e) => {
-                temaOtroDiv.hidden = e.target.value !== 'otro';
-            });
-        }
 
         // File input feedback
         const fileInput = document.getElementById('imagenes');

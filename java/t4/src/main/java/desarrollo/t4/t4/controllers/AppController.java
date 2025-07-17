@@ -9,8 +9,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,18 +42,21 @@ public class AppController {
             @RequestParam("sector") String sector,
             @RequestParam("nombre") String nombre,
             @RequestParam("email") String email,
-            @RequestParam("telefono") String telefono,
-            @RequestParam("contacto-tipo") List<String> contactoTipo,
-            @RequestParam("contacto-identificador") List<String> contactoID,
+            @RequestParam(value = "telefono", required = false) String telefono,
+            @RequestParam(value = "contacto-tipo", required = false) List<String> contactoTipo,
+            @RequestParam(value = "contacto-identificador", required = false) List<String> contactoID,
             @RequestParam("fecha-y-hora-inicio") String fecha_inicio_str,
-            @RequestParam("fecha-y-hora-fin") String fecha_fin_str,
-            @RequestParam("descripcion") String descripcion,
+            @RequestParam(value = "fecha-y-hora-fin", required = false) String fecha_fin_str,
+            @RequestParam(value = "descripcion", required = false) String descripcion,
             @RequestParam("tema") String tema,
             @RequestParam("tema-otro") String temaOtro,
             @RequestParam("imagenes") List<MultipartFile> fotos,
             Model model
         ) {
         try {
+            if (contactoTipo == null) contactoTipo = new ArrayList<>();
+            if (contactoID == null) contactoID = new ArrayList<>();
+
             appService.handleAddActivity(region, comuna, sector, nombre, email, telefono,
                     contactoTipo, contactoID, fecha_inicio_str, fecha_fin_str, descripcion, tema, temaOtro, fotos);
         } catch (Exception e) {
@@ -61,6 +66,29 @@ public class AppController {
             return "agregar-actividad";
         }
         return "redirect:/";
+    }
+
+    @GetMapping("/stats")
+    public String stats() {
+        return "stats";
+    }
+
+    @GetMapping("/stats/actividades_por_dia")
+    @ResponseBody
+    public List<Map<String, Object>> getActividadesPorDia() {
+        return appService.getActividadesPorDia();
+    }
+
+    @GetMapping("/stats/actividades_por_tipo")
+    @ResponseBody
+    public List<Map<String, Object>> getActividadesPorTipo() {
+        return appService.getActividadesPorTipo();
+    }
+
+    @GetMapping("/stats/actividades_por_horario")
+    @ResponseBody
+    public List<Map<String, Object>> getActividadesPorHorario() {
+        return appService.getActividadesPorHorario();
     }
 
     @GetMapping("/finishedActivity")

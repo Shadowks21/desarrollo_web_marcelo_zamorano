@@ -17,6 +17,7 @@ import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -130,6 +131,78 @@ public class AppService {
     public List<Map<String, String>> getActivitiesData() {
         List<Actividad> activities = activityRepository.findAll();
         return getData(activities);
+    }
+
+    public List<Map<String, Object>> getActividadesPorDia() {
+        List<Actividad> actividades = activityRepository.findAll();
+        Map<String, Integer> actividadesPorDia = new HashMap<>();
+
+        for (Actividad actividad : actividades) {
+            String fecha = actividad.getDiaHoraInicio().toLocalDate().toString();
+            actividadesPorDia.put(fecha, actividadesPorDia.getOrDefault(fecha, 0) + 1);
+        }
+
+        return actividadesPorDia.entrySet().stream()
+                .map(entry -> {
+                    Map<String, Object> result = new HashMap<>();
+                    result.put("fecha", entry.getKey());
+                    result.put("total", entry.getValue());
+                    return result;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<Map<String, Object>> getActividadesPorTipo() {
+        List<ActividadTema> actividadTemas = actividadTemaRepository.findAll();
+        Map<String, Integer> actividadesPorTipo = new HashMap<>();
+
+        for (ActividadTema actividadTema : actividadTemas) {
+            String tema = actividadTema.getTema();
+            if (tema.equals("otro") || tema.equals("Otro")) {
+                tema = actividadTema.getGlosaOtro();
+            }
+            actividadesPorTipo.put(tema, actividadesPorTipo.getOrDefault(tema, 0) + 1);
+        }
+
+        return actividadesPorTipo.entrySet().stream()
+                .map(entry -> {
+                    Map<String, Object> result = new HashMap<>();
+                    result.put("tema", entry.getKey());
+                    result.put("total", entry.getValue());
+                    return result;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<Map<String, Object>> getActividadesPorHorario() {
+        List<Actividad> actividades = activityRepository.findAll();
+        Map<String, int[]> actividadesPorMes = new HashMap<>();
+
+        for (Actividad actividad : actividades) {
+            String mes = actividad.getDiaHoraInicio().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+            int hora = actividad.getDiaHoraInicio().getHour();
+
+            actividadesPorMes.putIfAbsent(mes, new int[3]); // [mañana, mediodía, tarde]
+
+            if (hora < 12) {
+                actividadesPorMes.get(mes)[0]++; // mañana
+            } else if (hora >= 12 && hora <= 17) {
+                actividadesPorMes.get(mes)[1]++; // mediodía
+            } else {
+                actividadesPorMes.get(mes)[2]++; // tarde
+            }
+        }
+
+        return actividadesPorMes.entrySet().stream()
+                .map(entry -> {
+                    Map<String, Object> result = new HashMap<>();
+                    result.put("mes", entry.getKey());
+                    result.put("manana", entry.getValue()[0]);
+                    result.put("mediodia", entry.getValue()[1]);
+                    result.put("tarde", entry.getValue()[2]);
+                    return result;
+                })
+                .collect(Collectors.toList());
     }
 
     public List<Map<String, String>> getFinishedActivitiesData() {
@@ -265,8 +338,10 @@ public class AppService {
 
         try {
             Map<String, String> contactos = new HashMap<>();
-            for (int i = 0; i < contactoTipo.size(); i++) {
-                contactos.put(contactoTipo.get(i), contactoID.get(i));
+            if (contactoTipo != null && contactoID != null && !contactoTipo.isEmpty() && !contactoID.isEmpty()) {
+                for (int i = 0; i < contactoTipo.size(); i++) {
+                    contactos.put(contactoTipo.get(i), contactoID.get(i));
+                }
             }
             LocalDateTime fechaInicio = LocalDateTime.parse(fecha_inicio_str);
             LocalDateTime fechaFin = fecha_fin_str != null && !fecha_fin_str.isEmpty() ?

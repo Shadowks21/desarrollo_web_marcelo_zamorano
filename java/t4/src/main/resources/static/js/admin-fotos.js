@@ -33,9 +33,6 @@ const AdminFotos = {
         this.currentFotoId = fotoId;
         this.currentFotoName = nombreArchivo;
 
-        document.getElementById('deleteMessage').textContent =
-            `¿Estás seguro de que deseas eliminar la foto "${nombreArchivo}"?`;
-
         // Limpiar campos
         document.getElementById('deleteReasonInput').value = '';
         this.validateMessage();
@@ -154,7 +151,7 @@ const AdminFotos = {
             formData.append('id', this.currentFotoId);
             formData.append('message', message);
 
-            const response = await fetch('/deleteFoto', {
+            const response = await fetch('/admin/deleteFoto', {
                 method: 'POST',
                 body: formData
             });
@@ -210,7 +207,6 @@ const AdminFotos = {
 
         // Animación de actualización
         this.animateNumber(fotosStat, parseInt(fotosStat.textContent), totalFotos);
-        this.animateNumber(actividadesStat, parseInt(actividadesStat.textContent), totalActividades);
     },
 
     animateNumber(element, from, to) {

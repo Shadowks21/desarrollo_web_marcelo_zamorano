@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Actividad - Actividades Outdoors</title>
-    <link rel="stylesheet" th:href="@{/css/global.css}">
-    <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <link rel="stylesheet" th:href="@{/css/form-styles.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <th:block th:replace="~{fragments/head :: head('Agregar Actividad', ${ {'global.css', 'navbar.css', 'form-styles.css'} })}"></th:block>
 </head>
 <body>
-    <div th:replace="~{fragments/navbar :: navbar('Actividades Recreativas', 'Agrega tu actividad' )}"></div>
+    <div th:replace="~{fragments/navbar :: navbar('Actividades Recreativas', 'Agregar actividad')}"></div>
 
     <div class="container">
         <div class="form-wrapper">
@@ -164,7 +160,7 @@
                                 <span class="error-message" id="error-message-tema"></span>
                             </div>
                             <div class="input-group" id="tema-otro-div" hidden>
-                                <label for="tema-otro">Especifique el Tema</label>
+                                <label for="tema-otro">Especifique el Tema *</label>
                                 <input type="text" id="tema-otro" name="tema-otro" maxlength="100"
                                        placeholder="Describa el tema específico">
                                 <span class="error-message" id="error-message-tema-otro"></span>
