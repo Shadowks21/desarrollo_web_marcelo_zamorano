@@ -19,7 +19,7 @@
                         <h2>Bienvenido a nuestro sistema de actividades</h2>
                         <p>Descubre y participa en las actividades recreativas más emocionantes de Chile.</p>
                         <div class="action-buttons">
-                            <a href="/agregarActividad" class="action-btn">
+                            <a th:if="${!#lists.isEmpty(activities)}" href="/agregarActividad" class="action-btn">
                                 <i class="fas fa-plus"></i>
                                 Agregar Actividad
                             </a>
@@ -33,7 +33,19 @@
 
                 <div class="activities-section">
                     <h2>Actividades Recientes</h2>
-                    <div th:if="${activities != null and not #lists.isEmpty(activities)}" class="activities-grid">
+                    <div th:if="${#lists.isEmpty(activities)}" class="no-activities">
+                        <div class="no-activities-content">
+                            <div class="no-activities-icon">
+                                <i class="fas fa-calendar-times"></i>
+                            </div>
+                            <h3>No hay actividades recientes</h3>
+                            <p>¡Sé el primero en publicar una actividad</p>
+                            <a href="/agregarActividad" class="btn btn-primary">
+                                <i class="fas fa-plus-circle"></i> Agregar Actividad
+                            </a>
+                        </div>
+                    </div>
+                    <div th:unless="${#lists.isEmpty(activities)}" class="activities-grid">
                         <!-- Mostrar todas las actividades -->
                         <div th:each="actividad : ${activities}" class="activity-card">
                             <div class="activity-content">

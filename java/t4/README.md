@@ -76,3 +76,6 @@ Se conservó la estructura de templates HTML con Thymeleaf como motor de plantil
 #### Estilos
 - Se mejoraron los estilos de los templates HTML utilizando Bootstrap.
 - Utilización de nuevos iconos para dar dinamismo y cercanía a la interfaz de usuario.
+
+#### Errores
+- Mi proyecto funcionaba correctamente en la subida de imagenes. En la creación de un script para ejecutar el proyecto rápidamente, se desconfiguró todo, y ahora no funciona la subida de imagenes a la carpeta `uploads/`, pero si lo guarda en la base de datos. Dado que no se mencionó nada de esto en clase auxiliar, no se pudo solucionar.

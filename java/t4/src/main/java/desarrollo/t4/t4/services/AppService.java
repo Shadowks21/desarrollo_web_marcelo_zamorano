@@ -19,11 +19,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.StreamSupport.stream;
-
 @Service
 @Transactional
 public class AppService {
+
+    private final String uploadDir;
 
     private final String pathStatic;
 
@@ -59,6 +59,14 @@ public class AppService {
         Path staticDir = Paths.get(ResourceUtils.getFile("classpath:static").getAbsolutePath());
         this.pathStatic = staticDir.toString();
         System.out.println("Static path resolved to: " + this.pathStatic);
+
+        // Crear directorio uploads en la raíz del proyecto
+        Path uploadPath = Paths.get("uploads");
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+        this.uploadDir = uploadPath.toAbsolutePath().toString();
+        System.out.println("Upload directory: " + this.uploadDir);
     }
 
     public List<Map<String, String>> getData(List<Actividad> activities) {
@@ -100,7 +108,7 @@ public class AppService {
                 joinedTemas.append(ftema).append(", ");
             }
             activityData.put("temas", (joinedTemas.isEmpty()) ? "N/A" : joinedTemas.substring(0, joinedTemas.length() - 2));
-            // En el método getData, reemplaza la sección de ContactarPor con:
+
             StringBuilder joinedContactarPor = new StringBuilder();
 
             // ContactarPor handling
@@ -393,6 +401,12 @@ public class AppService {
 
             // 2. Crear y asociar las fotos
             List<Foto> fotosList = new ArrayList<>();
+            Path uploadsDir = Paths.get("uploads");
+            if (!Files.exists(uploadsDir)) {
+                Files.createDirectories(uploadsDir);
+                System.out.println("Uploads directory created at: " + uploadsDir.toAbsolutePath());
+            }
+
             for (MultipartFile foto : fotos) {
                 String _originalFilename = foto.getOriginalFilename();
                 MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -412,29 +426,19 @@ public class AppService {
                 }
 
                 String imgFilename = _filename + "." + _extension;
-                String relativePathImg = "/uploads/" + imgFilename;
-                String finalPath = pathStatic + relativePathImg;
+                Path filePath = uploadsDir.resolve(imgFilename);
 
-                System.out.println("Final image path: " + finalPath);
-
-                // Ensure the uploads directory exists
-                Path directoryPath = Paths.get(pathStatic + "/uploads");
-                if (!Files.exists(directoryPath)) {
-                    Files.createDirectories(directoryPath);
-                    System.out.println("Uploads directory created.");
-                }
-
-                // Save the image file
-                Path path = Paths.get(finalPath);
+                // Save the file to the uploads directory
                 try (InputStream inputStream = foto.getInputStream()) {
-                    Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
-                    System.out.println("File successfully saved at: " + path.toAbsolutePath());
+                    Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println("File successfully saved at: " + filePath.toAbsolutePath());
                 } catch (IOException e) {
+                    System.err.println("Error saving file: " + e.getMessage());
                     throw new RuntimeException("Failed to save the image file.", e);
                 }
 
                 Foto fotoEntity = new Foto();
-                fotoEntity.setRutaArchivo(relativePathImg);
+                fotoEntity.setRutaArchivo("/uploads/" + imgFilename);
                 fotoEntity.setNombreArchivo(imgFilename);
                 fotoEntity.setActividad(actividad);
                 fotoEntity.setActividadId(actividad.getId());

@@ -670,3 +670,115 @@
         font-size: 1rem;
     }
 }
+.no-activities {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #2d1810 0%, #3d2418 100%);
+    border: 2px solid rgba(255, 140, 0, 0.3);
+    border-radius: 16px;
+    margin: 2rem 0;
+    box-shadow: 0 8px 16px rgba(255, 140, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.no-activities::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff8c00, #ffa500);
+}
+
+.no-activities-content {
+    max-width: 400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.no-activities-icon {
+    font-size: 4rem;
+    color: #ff8c00;
+    margin-bottom: 1.5rem;
+    text-shadow: 1px 1px 2px rgba(255, 140, 0, 0.2);
+}
+
+.no-activities h3 {
+    color: #ff8c00;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(255, 140, 0, 0.2);
+}
+
+.no-activities p {
+    color: #d4d4d4;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.no-activities .btn {
+    background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+    color: #1a0f0a;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.no-activities .btn:hover {
+    background: linear-gradient(135deg, #ffa500 0%, #ffb347 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 140, 0, 0.4);
+    color: #0d1117;
+    text-decoration: none;
+}
+
+.no-activities .btn i {
+    font-size: 1.1rem;
+}
+
+/* Responsive para no-activities */
+@media (max-width: 768px) {
+    .no-activities {
+        padding: 3rem 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .no-activities-icon {
+        font-size: 3rem;
+    }
+
+    .no-activities h3 {
+        font-size: 1.3rem;
+    }
+
+    .no-activities p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .no-activities {
+        padding: 2rem 1rem;
+    }
+
+    .no-activities-icon {
+        font-size: 2.5rem;
+    }
+
+    .no-activities h3 {
+        font-size: 1.2rem;
+    }
+}

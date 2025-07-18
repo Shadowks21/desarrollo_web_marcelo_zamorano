@@ -150,7 +150,7 @@ class FormValidator {
         if (!telefono) return [true, ''];
 
         const regex = /^\+\d{1,3}\.\d{8}$/;
-        return regex.test(telefono) ? [true, ''] : [false, 'Formato: +56.9XXXXXXXX'];
+        return regex.test(telefono) ? [true, ''] : [false, 'Formato: +XXX.XXXXXXXX'];
     }
 
     validateFechaYHoraInicio() {
