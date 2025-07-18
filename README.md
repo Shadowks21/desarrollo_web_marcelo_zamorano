@@ -1,86 +1,96 @@
-# Proyecto Híbrido: Flask + Spring Boot
+# Migración de Flask a Java Spring Boot - Tarea 5
 
-Este proyecto implementa una aplicación web híbrida que combina:
-- **Flask (Python)** - Para la interfaz principal y funcionalidades web
-- **Spring Boot (Java)** - Para API avanzada y funcionalidades específicas
+## Descripción del Proyecto
 
-# La idea :c
+Este proyecto representa la migración completa de una aplicación web desarrollada originalmente en Flask (Python) hacia Java Spring Boot. La aplicación gestiona un sistema de actividades y fotografías, permitiendo la administración de contenido multimedia asociado a diferentes eventos.
 
-## 🌐 URLs de Acceso
+## Cambios Realizados en la Rama Tarea_5
 
-- **Flask App:** http://localhost:5000
-- **Spring Boot App:** http://localhost:8080
-- **API Java:** http://localhost:8080/api
+### Migración de Arquitectura
 
-## Funcionalidades
+La migración se fundamentó en los siguientes principios:
 
-### Flask (Puerto 5000)
-- Página principal con actividades
-- Formulario agregar actividad
-- Listado de actividades
-- Detalle de actividad
-- Comentarios
-- Estadísticas básicas
+- **Cambio de framework**: De Flask a Spring Boot para aprovechar las ventajas del ecosistema Java
+- **Arquitectura MVC**: Implementación del patrón Modelo-Vista-Controlador de manera más estructurada
+- **Gestión de dependencias**: Migración de pip/requirements.txt a Maven
+- **Persistencia de datos**: Integración con JPA/Hibernate para manejo de base de datos
 
-### Spring Boot (Puerto 8080)
-- API REST completa
-- Paginación
-- CORS configurado para Flask
+### Estructura Principal (y nueva) del Proyecto
+
+#### Modelos (Models)
+- `Actividad.java`: Entidad que representa las actividades del sistema
+- `Foto.java`: Entidad para gestión de fotografías asociadas a actividades
+
+#### Repositorios (Repositories)
+- `ActividadRepository.java`: Interface para operaciones CRUD de actividades
+- `FotoRepository.java`: Interface para operaciones CRUD de fotografías
+
+#### Servicios (Services)
+- `AdminService.java`: Lógica de negocio para administración del sistema
+- `AppService.java`: Servicios relacionados con la aplicació
+- `ApiService.java`: Servicios API para interacción con la base de datos.
+
+#### Controladores (Controllers)
+- `AdminController.java`: Controlador para funcionalidades administrativas
+- `AdminFotosController.java`: Controlador específico para administración de fotos
+- `ActividadController.java`: Controlador para operaciones de actividades
+
+### Decisiones Técnicas
+
+#### Resumen
+Se decidió migrar todo el proyecto de Flask integrado con python a Spring Boot integrado con Java, pues surgían ciertas colisiones
+en la base de datos (creación de tablas seq y desconfiguración del proyecto en flask para añadir nuevas actividades).
+Debido a esto se eliminó por completo la integración híbrida.
+
+Se decidió aprovechar el cambio de framework para cambiar estilos, mejorar templates, seguridad y funcionalidades de la aplicación.
+Trabajar con Java y el patrón Controller-Service-Repository (CSR) permite una mejor organización del código y una mayor escalabilidad.
+
+La carpeta con las imagenes añadidas se carga dinámicamente desde el directorio `uploads/` ubicado dentro de la carpeta `target/classes/static/`.
+Por favor, no recompile el proyecto si ha añadido imágenes, ya que se perderán al compilar. No se tuvó conocimiento de como configurar esto ya que
+en la clase auxiliar no se habló de ello.
+
+#### Gestión de Archivos
+Se mantuvo la funcionalidad de carga y gestión de archivos multimedia, implementando:
+- Almacenamiento en directorio `uploads/`
+- Validación de tipos de archivo
+- Generación de nombres únicos para evitar colisiones
+
+#### Interfaz de Usuario
+Se conservó la estructura de templates HTML con Thymeleaf como motor de plantillas:
+- Fragmentos reutilizables
+- Integración con Bootstrap para estilos
+- JavaScript para funcionalidades dinámicas
+
+#### Funcionalidades Implementadas
+- **Funcionalidades anteriores**: Todas las funcionalidades de la versión Flask fueron migradas y mejoradas
+- **Administración de fotos**: Visualización, eliminación y gestión por actividades
+
+### Mejoras Implementadas
+
+#### Seguridad
+- Validación de entrada en controladores
+- Manejo de excepciones estructurado
+- Protección contra inyección de código
+- Utilización de Spring Security para autenticación y autorización
+
+#### Estilos
+- Se mejoraron los estilos de los templates HTML utilizando Bootstrap.
+- Utilización de nuevos iconos para dar dinamismo y cercanía a la interfaz de usuario.
+
+#### Errores
+- Arreglado: Mi proyecto funcionaba correctamente en la subida de imagenes. En la creación de un script para ejecutar el proyecto rápidamente, se desconfiguró todo, y ahora no funciona la subida de imagenes a la carpeta `uploads/`, pero si lo guarda en la base de datos. Dado que no se mencionó nada de esto en clase auxiliar, no se pudo solucionar.
+
+### Manejo de base de datos con python
+
+- Se recomienda usar vscode para iniciar la base de datos en el ambiente virtual que cumpla con requirementes.txt
+- Si se quiere hacer un drop schema lo mejor es hacerlo de vscode y ejecutar init_db.py para volver a iniciar el schema.
+
+### Ejecución de la aplicación.
+
+- Utilizando intellij, este lo detecta automaticamente se nos colocamos el último directorio llamado "t4".
+- Utilizando la terminal, se recomienda (por favor) no recompilar el proyecto con mvn (pues el arreglo que se realizo al manejo de datos puede que se desconfiguré nuevamente). Por favor, solamente hacer run en el main de la app.
 
 
-### CORS
-Spring Boot está configurado para aceptar peticiones desde Flask (localhost:5000).
+### Conclusión
 
-
-## Integración
-
-### Flask → Java
-Flask puede consumir la API de Java para:
-- Búsquedas avanzadas
-- Filtros complejos
-- Estadísticas detalladas
-
-### Java → Flask
-Java puede redirigir a Flask para:
-- Formularios de creación
-- Interfaz principal
-- Funcionalidades específicas
-
-## Desarrollo
-
-### Agregar Endpoints Java
-1. Crear método en `ApiService`
-2. Agregar endpoint en `ApiController`
-3. Configurar CORS si es necesario
-
-### Agregar Funcionalidades Flask
-1. Crear ruta en `app.py`
-2. Crear template si es necesario
-3. Actualizar base de datos si es requerido
-
-## Tecnologías Utilizadas
-
-### Frontend
-- HTML5, CSS3, JavaScript
-- Bootstrap 5
-- Jinja2 (Flask templates)
-- Thymeleaf (Spring Boot templates)
-
-### Backend
-- **Flask:** Python web framework
-- **Spring Boot:** Java framework
-- **JPA/Hibernate:** ORM para Java
-- **SQLAlchemy:** ORM para Python
-
-### Base de Datos
-- MySQL 8.0
-- Shared schema entre ambas apps
-
-
-- **Dinamismo y experiencia de usuario:** Se priorizó el dinamismo en la interfaz, permitiendo que el usuario reciba retroalimentación inmediata sobre sus acciones (por ejemplo, mensajes de éxito o error al agregar actividades) y que la información se actualice automáticamente en pantalla.
-
-# Conclusión 
-
-En resumen, la Tarea 3 implicó la integración de conceptos modernos de desarrollo web, como AJAX, promesas y renderizado dinámico en el cliente, junto con una arquitectura clara y validaciones robustas, logrando una aplicación más interactiva, eficiente y correcta al momento de utilizarla.
-
-Sin embargo, no se pudo realizar correctamente la tarea 4, pero si se lograron crear modelos en Java para la entrega. Así como también se utilzó la estructura vista en clases auxiliares.
+El proyecto se completo con mucho éxito. Fue un camino lleno de errores y robusto. Afortunadamente se pudieron sortear todas las adversidades y se implementarón todas las funcionalidades pedidas ( y nuevamente las que ya existian) ahora utilizando Spring Boot + Java.
