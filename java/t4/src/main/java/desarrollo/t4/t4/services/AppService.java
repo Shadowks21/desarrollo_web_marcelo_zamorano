@@ -100,14 +100,28 @@ public class AppService {
                 joinedTemas.append(ftema).append(", ");
             }
             activityData.put("temas", (joinedTemas.isEmpty()) ? "N/A" : joinedTemas.substring(0, joinedTemas.length() - 2));
+            // En el método getData, reemplaza la sección de ContactarPor con:
             StringBuilder joinedContactarPor = new StringBuilder();
 
             // ContactarPor handling
             for (ContactarPor contacto : activity.getContactarPor()) {
-                joinedContactarPor.append(contacto.getNombre()).append(", ");
+                String tipoContacto = contacto.getNombre();
+                String identificador = contacto.getIdentificador();
+                if (tipoContacto.equalsIgnoreCase("instagram")) {
+                    identificador = "@" + identificador;
+                }
+
+                // Capitalizar primera letra del tipo de contacto
+                if (!tipoContacto.isEmpty()) {
+                    tipoContacto = tipoContacto.substring(0, 1).toUpperCase() +
+                            tipoContacto.substring(1).toLowerCase();
+                }
+
+                joinedContactarPor.append(tipoContacto).append(": ").append(identificador).append(", ");
             }
-            activityData.put("contactarPor", joinedContactarPor.isEmpty() ? "N/A" : joinedContactarPor.substring(0, joinedContactarPor.length() - 2));
-            StringBuilder joinedFotos = new StringBuilder();
+
+            activityData.put("contactarPor", joinedContactarPor.isEmpty() ? "N/A" :
+                    joinedContactarPor.substring(0, joinedContactarPor.length() - 2));StringBuilder joinedFotos = new StringBuilder();
 
             // Fotos handling
             for (Foto foto : activity.getFotos()) {
@@ -132,7 +146,7 @@ public class AppService {
 
     public List<Map<String, String>> getActivitiesData() {
         List<Actividad> activities = activityRepository.findAll();
-        activities.sort(Comparator.comparing(Actividad::getDiaHoraInicio));
+        activities.sort(Comparator.comparing(Actividad::getId).reversed());
         return getData(activities);
     }
 
@@ -484,5 +498,36 @@ public class AppService {
         } catch (Exception e) {
             throw new Exception("Error while rating activity: " + e.getMessage(), e);
         }
+    }
+
+    public void agregarComentario(String nombre, String texto, Long actividadId) throws Exception {
+        try {
+            Comentario comentario = new Comentario(nombre, texto, actividadId);
+            comentarioRepository.save(comentario);
+
+        } catch (Exception e) {
+            throw new Exception("Error al guardar comentario: " + e.getMessage());
+        }
+    }
+
+    public List<Map<String, Object>> obtenerComentariosPorActividad(Long actividadId) {
+        Actividad actividad = activityRepository.findById(actividadId).orElse(null);
+        if (actividad == null) {
+            return Collections.emptyList();
+        }
+        List<Comentario> comentarios = comentarioRepository.findAll();
+        comentarios = comentarios.stream()
+                .filter(comentario -> comentario.getActividadId().equals(actividadId))
+                .sorted(Comparator.comparing(Comentario::getFecha).reversed())
+                .toList();
+
+        return comentarios.stream().map(comentario -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", comentario.getId());
+            map.put("nombre", comentario.getNombre());
+            map.put("texto", comentario.getTexto());
+            map.put("fecha", comentario.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+            return map;
+        }).collect(Collectors.toList());
     }
 }

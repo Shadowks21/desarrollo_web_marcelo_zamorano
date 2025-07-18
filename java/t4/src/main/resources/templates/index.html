@@ -1,17 +1,12 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/base}">
-<head>
-    <th:block th:replace="~{fragments/head :: head('Actividades recreativas de Chile', null)}"></th:block>
-    <link rel="stylesheet" th:href="@{/css/global.css}">
-    <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <link rel="stylesheet" th:href="@{/css/index-styles.css}">
-</head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{fragments/head :: head('Actividades recreativas de Chile', ${ {'global.css', 'navbar.css', 'index-styles.css'} }, null)}"></th:block>
+
 <body>
     <th:block th:replace="~{fragments/navbar :: navbar('Actividades recreativas de Chile', 'inicio')}"></th:block>
 
-    <main layout:fragment="content">
+    <main>
         <div class="content-wrapper">
             <div class="main-content">
                 <h1>
@@ -37,14 +32,12 @@
                 </div>
 
                 <div class="activities-section">
-                    <h2>Próximas Actividades</h2>
+                    <h2>Actividades Recientes</h2>
                     <div th:if="${activities != null and not #lists.isEmpty(activities)}" class="activities-grid">
-
                         <!-- Mostrar todas las actividades -->
                         <div th:each="actividad : ${activities}" class="activity-card">
                             <div class="activity-content">
-                                <div class="card-header">
-                                </div>
+                                <div class="card-header"></div>
 
                                 <!-- Mostrar primera foto si existe -->
                                 <div th:if="${actividad['fotos'] != null and actividad['fotos'] != 'N/A'}" class="activity-photo">
@@ -69,7 +62,7 @@
                                         <div class="detail-item">
                                             <i class="fas fa-map-marker-alt"></i>
                                             <span class="detail-label">Ubicación:</span>
-                                            <span class="detail-value" th:text="${actividad['sector'] + ', ' + actividad['comuna']}">Ubicación</span>
+                                            <span class="detail-value" th:text="${actividad['sector'] == '' ?  actividad['comuna'] : actividad['sector'] + ', ' + actividad['comuna'] }">Ubicación</span>
                                         </div>
                                         <div class="detail-item">
                                             <i class="fas fa-tag"></i>
@@ -91,14 +84,29 @@
                                 </a>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </main>
-    <div th:replace="~{fragments/scripts :: scripts('admin-login-modal.js')}"></div>
+
+    <!-- Botón y modal de administrador -->
     <div th:replace="~{fragments/admin-button :: admin-float-btn('Administrar')}"></div>
     <div th:replace="~{fragments/admin-login-modal :: admin-login-modal}"></div>
+
+    <!-- Scripts -->
+    <script th:src="@{/js/admin-login-modal.js}"></script>
+
+    <!-- Script para mostrar el modal cuando hay un error de autenticación -->
+    <script th:if="${param.error}">
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var adminModal = document.getElementById('adminModal');
+                if (adminModal) {
+                    adminModal.style.display = 'block';
+                }
+            }, 100);
+        });
+    </script>
 </body>
 </html>

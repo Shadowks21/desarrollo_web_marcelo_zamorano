@@ -28,7 +28,7 @@ public class Comentario {
     private LocalDateTime fecha;
     
     @Column(name = "actividad_id", nullable = false)
-    private Integer actividadId;
+    private Long actividadId;
     
     @ManyToOne
     @JoinColumn(name = "actividad_id", insertable = false, updatable = false)
@@ -37,7 +37,7 @@ public class Comentario {
     // Constructors
     public Comentario() {}
 
-    public Comentario(String nombre, String texto, Integer actividadId) {
+    public Comentario(String nombre, String texto, Long actividadId) {
         this.nombre = nombre;
         this.texto = texto;
         this.actividadId = actividadId;
@@ -63,8 +63,8 @@ public class Comentario {
     public LocalDateTime getFecha() { return fecha; }
     public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
     
-    public Integer getActividadId() { return actividadId; }
-    public void setActividadId(Integer actividadId) { this.actividadId = actividadId; }
+    public Long getActividadId() { return actividadId; }
+    public void setActividadId(Long actividadId) { this.actividadId = actividadId; }
     
     public Actividad getActividad() { return actividad; }
     public void setActividad(Actividad actividad) { this.actividad = actividad; }

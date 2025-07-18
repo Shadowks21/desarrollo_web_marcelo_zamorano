@@ -13,8 +13,13 @@ class FormValidator {
         const fechaInput = document.getElementById('fecha-y-hora-inicio');
         if (fechaInput) {
             const now = new Date();
-            now.setMinutes(now.getMinutes() + 60); // 1 hora desde ahora
             fechaInput.value = this.formatDateTime(now);
+        }
+        const fechaFinInput = document.getElementById('fecha-y-hora-fin');
+        if (fechaFinInput) {
+            const now = new Date();
+            now.setHours(now.getHours() + 3); // Establecer una hora después de la actual
+            fechaFinInput.value = this.formatDateTime(now);
         }
     }
 
@@ -92,7 +97,15 @@ class FormValidator {
     }
 
     formatDateTime(date) {
-        return date.toISOString().slice(0, 16);
+        const pad = (num) => num.toString().padStart(2, '0');
+
+        const year = date.getFullYear();
+        const month = pad(date.getMonth() + 1); // getMonth() es 0-indexado
+        const day = pad(date.getDate());
+        const hours = pad(date.getHours());
+        const minutes = pad(date.getMinutes());
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
 
     capitalize(str) {

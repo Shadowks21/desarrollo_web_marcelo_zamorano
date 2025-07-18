@@ -9,8 +9,17 @@
         <div class="modal-content">
             <span class="close" onclick="closeAdminLogin()">&times;</span>
             <h2>Acceso de Administrador</h2>
+
+            <!-- Mensaje de error para credenciales inválidas -->
+            <div th:if="${param.error}" class="alert alert-danger"
+                 style="color: red; margin-bottom: 15px; padding: 10px;
+                        border: 1px solid red; border-radius: 5px;
+                        background-color: #ffeeee;">
+                Credenciales incorrectas. Por favor, inténtelo nuevamente.
+            </div>
+
             <form id="adminLoginForm" th:action="@{/login}" method="post">
-                <input type="hidden" name="redirect" th:value="@{/admin/admin-fotos}">
+                <input type="hidden" name="redirect">
                 <div class="form-group">
                     <label for="username">Usuario:</label>
                     <input type="text" id="username" name="username" required>
@@ -23,5 +32,29 @@
             </form>
         </div>
     </div>
+
+    <!-- Script para mostrar el modal si hay error de autenticación -->
+    <script th:if="${param.error}" th:inline="javascript">
+        // Usar esta función inmediata para asegurar que el modal se muestre
+        (function() {
+            // Función para verificar si el DOM está cargado
+            function checkAndShowModal() {
+                var modal = document.getElementById('adminModal');
+                if (modal) {
+                    modal.style.display = 'block';
+                } else {
+                    // Si el modal aún no existe, intentar de nuevo en 100ms
+                    setTimeout(checkAndShowModal, 100);
+                }
+            }
+
+            // Iniciar el proceso de verificación
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', checkAndShowModal);
+            } else {
+                checkAndShowModal();
+            }
+        })();
+    </script>
 </body>
 </html>

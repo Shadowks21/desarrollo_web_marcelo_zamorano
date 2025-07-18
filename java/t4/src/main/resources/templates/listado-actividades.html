@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{fragments/head :: head('Listado de Actividades', ${ {'global.css', 'navbar.css', 'listado-actividades-styles.css'} }, null)}"></th:block>
+<body>
+    <th:block th:replace="~{fragments/navbar :: navbar('Actividades recreativas de Chile', 'listado')}"></th:block>
+
+    <main>
+        <div class="content-wrapper">
+            <div class="main-content">
+                <h1>
+                    <i class="fas fa-list"></i>
+                    Todas las Actividades
+                </h1>
+
+                <div th:if="${activities != null and not #lists.isEmpty(activities)}" class="activities-container">
+                    <div class="activities-grid">
+                        <div th:each="actividad : ${activities}"
+                             class="activity-card clickable-card"
+                             th:data-id="${actividad['id']}">
+                            <div class="card-header">
+                                <span class="activity-id">ID: <span th:text="${actividad['id'] ?: 'N/A'}">123</span></span>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="activity-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-calendar"></i>
+                                        <span class="detail-label">Inicio:</span>
+                                        <span class="detail-value" th:text="${actividad['diaHoraInicio']}">Fecha</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-calendar-times"></i>
+                                        <span class="detail-label">Término:</span>
+                                        <span class="detail-value" th:text="${actividad['diaHoraTermino'] != null and actividad['diaHoraTermino'] != 'N/A' ? actividad['diaHoraTermino'] : 'No existe hora de término'}">Fecha</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span class="detail-label">Comuna:</span>
+                                        <span class="detail-value" th:text="${actividad['comuna']}">Comuna</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-location-arrow"></i>
+                                        <span class="detail-label">Sector:</span>
+                                        <span class="detail-value" th:text="${actividad['sector']}">Sector</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-tag"></i>
+                                        <span class="detail-label">Tema:</span>
+                                        <span class="detail-value" th:text="${actividad['temas']}">Tema</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-user"></i>
+                                        <span class="detail-label">Organizador:</span>
+                                        <span class="detail-value" th:text="${actividad['nombre']}">Nombre</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-images"></i>
+                                        <span class="detail-label">Total fotos:</span>
+                                        <span class="detail-value" th:text="${actividad['fotos'] != null and actividad['fotos'] != 'N/A' ? #lists.size(#strings.listSplit(actividad['fotos'], ', ')) : 0}">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paginación -->
+                    <div class="pagination-container">
+                        <nav class="pagination-nav">
+                            <a th:if="${page > 1}"
+                               th:href="@{/listado-actividades(page=${page - 1})}"
+                               class="pagination-btn prev-btn">
+                                <i class="fas fa-chevron-left"></i>
+                                Anterior
+                            </a>
+
+                            <div class="page-info">
+                                <span class="page-text">
+                                    Página <strong th:text="${page}">1</strong> de <strong th:text="${totalPages}">1</strong>
+                                </span>
+                            </div>
+
+                            <a th:if="${page < totalPages}"
+                               th:href="@{/listado-actividades(page=${page + 1})}"
+                               class="pagination-btn next-btn">
+                                Siguiente
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <div th:unless="${activities != null and not #lists.isEmpty(activities)}" class="no-activities">
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No hay actividades registradas</h3>
+                        <p>Aún no hay actividades para mostrar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Agregar event listeners a todas las tarjetas clickeables
+            document.querySelectorAll('.clickable-card').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    const actividadId = this.getAttribute('data-id');
+                    if (actividadId) {
+                        window.location.href = '/detalle-actividad/' + actividadId;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

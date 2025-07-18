@@ -4,10 +4,9 @@ function verFotoFromButton(button) {
     const nombreArchivo = button.getAttribute('data-nombre-archivo');
     const actividad = button.getAttribute('data-actividad');
     const email = button.getAttribute('data-email');
-    const archivo = button.getAttribute('data-archivo');
 
     const cleanNombreArchivo = nombreArchivo.startsWith('/') ? nombreArchivo.substring(1) : nombreArchivo;
-    verFoto(fotoId, cleanNombreArchivo, actividad, email, archivo);
+    verFoto(fotoId, cleanNombreArchivo, actividad, email);
 }
 
 function verFoto(fotoId, nombreArchivo, actividadNombre, email) {
@@ -16,7 +15,6 @@ function verFoto(fotoId, nombreArchivo, actividadNombre, email) {
     const modalTitle = document.getElementById('modalTitle');
     const modalOrganizador = document.getElementById('modalOrganizador');
     const modalEmail = document.getElementById('modalEmail');
-    const modalArchivo = document.getElementById('modalArchivo');
 
     // Establecer la imagen
     modalImage.src = `/uploads/${nombreArchivo}`;
@@ -26,11 +24,10 @@ function verFoto(fotoId, nombreArchivo, actividadNombre, email) {
     modalTitle.textContent = `Foto #${fotoId}`;
     modalOrganizador.textContent = actividadNombre;
     modalEmail.textContent = email;
-    modalArchivo.textContent = nombreArchivo;
 
     // Mostrar modal
     modal.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
 }
 
 // Función para cerrar modal
@@ -38,7 +35,7 @@ function cerrarModal() {
     const modal = document.getElementById('fotoModal');
     modal.classList.remove('active');
     document.body.style.overflow = 'auto';
-    document.body.classList.remove('modal-open'); // Remover clase para evitar scroll
+    document.body.classList.remove('modal-open');
 }
 
 // Cerrar modal con tecla Escape

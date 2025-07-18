@@ -36,7 +36,6 @@ public class AdminFotosController {
     @PostMapping("/deleteFoto")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteFoto(
-            Model model,
             @RequestParam("id") Long id,
             @RequestParam("message") String message) {
         Map<String, Object> response = new HashMap<>();

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <th:block th:replace="~{fragments/head :: head('Detalle de Actividad', ${ {'global.css', 'navbar.css', 'detalle-actividad-styles.css'} }, null)}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/detalle-actividad-styles.css}">
+<body>
+    <th:block th:replace="~{fragments/navbar :: navbar('Actividades recreativas de Chile', 'detalle')}"></th:block>
+
+    <main>
+        <div class="content-wrapper">
+            <div class="main-content">
+                <div class="back-button-container">
+                    <a th:href="@{/listado-actividades}" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Volver al listado
+                    </a>
+                </div>
+
+                <div class="activity-detail-container">
+                    <div class="activity-header">
+                        <div class="activity-id">
+                            ID: <span th:text="${actividad['id']}">ID</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-content">
+                        <div class="info-section">
+                            <h3><i class="fas fa-info-circle"></i> Información General</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span class="info-label">Inicio:</span>
+                                    <span class="info-value" th:text="${actividad['diaHoraInicio']}">Fecha inicio</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span class="info-label">Término:</span>
+                                    <span class="info-value" th:text="${actividad['diaHoraTermino']}">Fecha término</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span class="info-label">Región:</span>
+                                    <span class="info-value" th:text="${actividad['region']}">Región</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-city"></i>
+                                    <span class="info-label">Comuna:</span>
+                                    <span class="info-value" th:text="${actividad['comuna']}">Comuna</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-road"></i>
+                                    <span class="info-label">Sector:</span>
+                                    <span class="info-value" th:text="${actividad['sector']}">Sector</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-tags"></i>
+                                    <span class="info-label">Temas:</span>
+                                    <span class="info-value" th:text="${actividad['temas']}">Temas</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-star"></i>
+                                    <span class="info-label">Calificación:</span>
+                                    <span class="info-value" th:text="${actividad['nota'] != null ? actividad['nota'] + '/7' : 'Sin calificar'}">Nota</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3><i class="fas fa-address-card"></i> Contacto</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <i class="fas fa-user"></i>
+                                    <span class="info-label">Organizador/a:</span>
+                                    <span class="info-value" th:text="${actividad['nombre']}"></span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <span class="info-label">Email:</span>
+                                    <span class="info-value" th:text="${actividad['email']}">Email</span>
+                                </div>
+                                <div th:if="${actividad['celular']}" class="info-item">
+                                    <i class="fas fa-phone"></i>
+                                    <span class="info-label">Teléfono:</span>
+                                    <span class="info-value" th:text="${actividad['celular'] != '' ? actividad['celular'] : 'No disponible'}">Teléfono</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-section" th:if="${actividad['contactarPor'] != null and actividad['contactarPor'] != 'N/A'}">
+                            <h3><i class="fas fa-comments"></i> Formas de Contacto</h3>
+                            <div class="contact-methods">
+                                <div th:each="contacto : ${#strings.listSplit(actividad['contactarPor'], ',')}" class="contact-method">
+                                    <i class="fas fa-arrow-right"></i>
+                                    <span class="contact-text" th:text="${contacto}">Método de contacto</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div th:if="${actividad['descripción']}" class="info-section">
+                            <h3><i class="fas fa-align-left"></i> Descripción</h3>
+                            <p class="description-text" th:text="${actividad['descripcion']}">Descripción de la actividad</p>
+                        </div>
+
+                        <div class="activity-gallery" th:if="${actividad['fotos'] != null and actividad['fotos'] != 'N/A'}">
+                            <h3><i class="fas fa-images"></i> Galería de Fotos</h3>
+                            <div class="gallery-grid">
+                                <div th:each="foto : ${#strings.listSplit(actividad['fotos'], ', ')}" class="gallery-item">
+                                    <img th:src="@{'/uploads/' + ${foto}}"
+                                         th:alt="${foto}"
+                                         class="gallery-image"
+                                         th:onclick="'openModal(\'' + @{'/uploads/' + ${foto}} + '\')'">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="comments-section">
+                            <h3><i class="fas fa-comments"></i> Comentarios</h3>
+
+                            <div class="comment-form">
+                                <form id="commentForm">
+                                    <input type="hidden" id="actividadId" th:value="${actividad['id']}">
+
+                                    <div class="form-group">
+                                        <label for="nombreComentario">Nombre <span class="required">*</span></label>
+                                        <input type="text" id="nombreComentario" name="nombre" maxlength="80" required>
+                                        <span class="error-message" id="nombreError"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="textoComentario">Comentario <span class="required">*</span></label>
+                                        <textarea id="textoComentario" name="texto" rows="4" required></textarea>
+                                        <span class="error-message" id="textoError"></span>
+                                    </div>
+
+                                    <button type="submit" class="submit-btn" id="submitBtn">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Agregar comentario
+                                    </button>
+                                </form>
+                                <div class="form-message" id="formMessage"></div>
+                            </div>
+
+                            <div class="comments-list" id="commentsList">
+                                <div class="loading">
+                                    <i class="fas fa-spinner fa-spin"></i> Cargando comentarios...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="imageModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <img class="modal-image" id="modalImage">
+            </div>
+        </div>
+    </main>
+
+    <script th:src="@{/js/detalle-actividad.js}"></script>
+</body>
+</html>

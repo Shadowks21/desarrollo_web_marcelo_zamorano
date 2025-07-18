@@ -4,15 +4,15 @@ import desarrollo.t4.t4.models.Comuna;
 import desarrollo.t4.t4.repositories.ComunaRepository;
 import desarrollo.t4.t4.services.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -69,6 +69,102 @@ public class AppController {
         return "redirect:/";
     }
 
+    @GetMapping("/listado-actividades")
+    public String listadoActividades(
+            @RequestParam(defaultValue = "1") int page,
+            Model model) {
+        List<Map<String, String>> allActivities = appService.getActivitiesData();
+
+        int pageSize = 5;
+        int totalItems = allActivities.size();
+        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, totalItems);
+
+        List<Map<String, String>> pageActivities = allActivities.subList(startIndex, endIndex);
+
+        model.addAttribute("activities", pageActivities);
+        model.addAttribute("page", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalItems", totalItems);
+
+        return "listado-actividades";
+    }
+
+    @GetMapping("/detalle-actividad/{id}")
+    public String detalleActividad(@PathVariable Long id, Model model) {
+        try {
+            List<Map<String, String>> allActivities = appService.getActivitiesData();
+            Map<String, String> actividad = allActivities.stream()
+                    .filter(a -> a.get("id").equals(id.toString()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (actividad == null) {
+                return "redirect:/listado-actividades";
+            }
+
+            model.addAttribute("actividad", actividad);
+            return "detalle-actividad";
+        } catch (Exception e) {
+            return "redirect:/listado-actividades";
+        }
+    }
+
+    @PostMapping("/comentarios")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> agregarComentario(
+            @RequestParam("nombre") String nombre,
+            @RequestParam("texto") String texto,
+            @RequestParam("actividadId") Long actividadId) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Validaciones
+            if (nombre == null || nombre.trim().length() < 3 || nombre.trim().length() > 80) {
+                response.put("success", false);
+                response.put("error", "El nombre debe tener entre 3 y 80 caracteres");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            if (texto == null || texto.trim().length() < 5) {
+                response.put("success", false);
+                response.put("error", "El comentario debe tener al menos 5 caracteres");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            if (!nombre.matches("^[a-zA-ZñÑáéíóúÁÉÍÓÚ\\s.,!?¿¡()]+$")) {
+                response.put("success", false);
+                response.put("error", "El nombre contiene caracteres no permitidos");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            appService.agregarComentario(nombre.trim(), texto.trim(), actividadId);
+
+            response.put("success", true);
+            response.put("message", "Comentario agregado exitosamente");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", "Error al agregar comentario: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/comentarios/{actividadId}")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> obtenerComentarios(@PathVariable Long actividadId) {
+        try {
+            List<Map<String, Object>> comentarios = appService.obtenerComentariosPorActividad(actividadId);
+            return ResponseEntity.ok(comentarios);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+        }
+    }
+
     @GetMapping("/stats")
     public String stats() {
         return "stats";
@@ -93,9 +189,25 @@ public class AppController {
     }
 
     @GetMapping("/finishedActivity")
-    public String finishedActivity(Model model) {
-        List<Map<String, String>> modelData = appService.getFinishedActivitiesData();
-        model.addAttribute("activities", modelData);
+    public String finishedActivity(
+            @RequestParam(defaultValue = "1") int page,
+            Model model) {
+        List<Map<String, String>> allActivities = appService.getFinishedActivitiesData();
+
+        int pageSize = 6; // Máximo 6 tarjetas por página
+        int totalItems = allActivities.size();
+        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, totalItems);
+
+        List<Map<String, String>> pageActivities = allActivities.subList(startIndex, endIndex);
+
+        model.addAttribute("activities", pageActivities);
+        model.addAttribute("page", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalItems", totalItems);
+
         return "listado-actividad";
     }
 
@@ -106,16 +218,5 @@ public class AppController {
         ) throws Exception {
         appService.handleRateActivity(actividadId, rating);
         return "redirect:/finishedActivity";
-    }
-
-    @Autowired
-    private ComunaRepository comunaRepository;
-
-    @GetMapping("/debug/comunas")
-    public String debugComunas(Model model) {
-        List<Comuna> comunas = comunaRepository.findAll();
-        List<String> comunasNombres = comunas.stream().map(Comuna::getNombre).toList();
-        model.addAttribute("comunas", comunasNombres);
-        return "debug";
     }
 }
