@@ -1,0 +1,8 @@
+{
+  "name": "tarea4-dev",
+  "version": "1.0.0",
+  "description": "Plugin para desarrollo de Tarea 4 - Sistema de evaluacion de actividades con Spring Boot",
+  "author": {
+    "name": "Marcelo Zamorano"
+  }
+}

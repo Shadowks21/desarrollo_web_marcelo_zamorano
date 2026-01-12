@@ -2,51 +2,69 @@
 
 {% block title %}Listado de Actividades{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/lista-styles.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/listado-styles.css') }}">
-{% endblock %}
-
-{% block navbar_title %}Listado de Actividades{% endblock %}
-
 {% block content %}
-    {% if data %}
-        <table style="width: 100%; margin: auto; text-align: center; border-collapse: collapse;" id="activity-table">
-            <thead>
-                <tr class="head-row">
-                    <th>Inicio</th>
-                    <th>Término</th>
-                    <th>Comuna</th>
-                    <th>Sector</th>
-                    <th>Tema</th>
-                    <th>Nombre Organizador</th>
-                    <th>Total Fotos</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for actividad in data %}
-                    <tr class="data-row" data-id="{{ actividad.id }}" onclick="window.location='{{ url_for('detalle_actividad', id=actividad.id) }}'">
-                        <td>{{ actividad.fecha_inicio }}</td>
-                        <td>{{ actividad.fecha_termino }}</td>
-                        <td>{{ actividad.comuna }}</td>
-                        <td>{{ actividad.sector }}</td>
-                        <td>{{ actividad.tema }}</td>
-                        <td>{{ actividad.nombre_organizador }}</td>
-                        <td>{{ actividad.total_fotos }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div>
-            {% if page > 1 %}
-                <a href="{{ url_for('listar_actividades', page=page-1) }}">Anterior</a>
-            {% endif %}
-            Página {{ page }} de {{ total//5 + (1 if total % 5 > 0 else 0) }}
-            {% if page * page_size < total %}
-                <a href="{{ url_for('listar_actividades', page=page+1) }}">Siguiente</a>
-            {% endif %}
-        </div>
-    {% else %}
-        <p>No hay actividades registradas.</p>
-    {% endif %}
+<div class="w3-card">
+    <div class="w3-card-header">
+        <h2><i class="fas fa-list"></i> Listado de Actividades</h2>
+    </div>
+    <div class="w3-padding">
+        {% if data %}
+            <div class="w3-responsive">
+                <table class="w3-table-all">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-calendar-alt"></i> Inicio</th>
+                            <th><i class="fas fa-flag-checkered"></i> Termino</th>
+                            <th><i class="fas fa-map-marker-alt"></i> Comuna</th>
+                            <th><i class="fas fa-location-dot"></i> Sector</th>
+                            <th><i class="fas fa-tag"></i> Tema</th>
+                            <th><i class="fas fa-user"></i> Organizador</th>
+                            <th><i class="fas fa-camera"></i> Fotos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for actividad in data %}
+                            <tr style="cursor: pointer;" onclick="window.location='{{ url_for('detalle_actividad', id=actividad.id) }}'">
+                                <td>{{ actividad.fecha_inicio }}</td>
+                                <td>{{ actividad.fecha_termino or '-' }}</td>
+                                <td>{{ actividad.comuna }}</td>
+                                <td>{{ actividad.sector or '-' }}</td>
+                                <td><span class="w3-tag w3-green">{{ actividad.tema }}</span></td>
+                                <td>{{ actividad.nombre_organizador }}</td>
+                                <td><span class="w3-tag w3-blue">{{ actividad.total_fotos }}</span></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginacion -->
+            <div class="w3-center w3-margin-top">
+                <div class="w3-bar">
+                    {% if page > 1 %}
+                        <a href="{{ url_for('listar_actividades', page=page-1) }}" class="w3-button w3-primary">
+                            <i class="fas fa-chevron-left"></i> Anterior
+                        </a>
+                    {% endif %}
+                    <span class="w3-bar-item" style="padding: 12px 16px; color: var(--text-color);">
+                        Pagina {{ page }} de {{ total//5 + (1 if total % 5 > 0 else 0) }}
+                    </span>
+                    {% if page * page_size < total %}
+                        <a href="{{ url_for('listar_actividades', page=page+1) }}" class="w3-button w3-primary">
+                            Siguiente <i class="fas fa-chevron-right"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="w3-center w3-padding-large">
+                <i class="fas fa-calendar-times" style="font-size: 4rem; color: var(--text-secondary);"></i>
+                <p class="w3-margin-top">No hay actividades registradas.</p>
+                <a href="{{ url_for('agregar_actividad') }}" class="w3-button w3-primary w3-margin-top">
+                    <i class="fas fa-plus"></i> Agregar Actividad
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

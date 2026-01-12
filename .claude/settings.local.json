@@ -2,7 +2,29 @@
   "permissions": {
     "allow": [
       "Bash(git mv:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "WebFetch(domain:www.w3schools.com)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\zamor\\\\Universidad\\\\2a_dcc\\\\sem1\\\\appweb\\\\tareas\\\\desarrollo_web_marcelo_zamorano\\\\.claude\\\\plugins\\\\tarea4-dev\")",
+      "Bash(mysql:*)",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysql\" --version)",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysql\" -u cc5002 -pprogramacionweb -e \"DROP DATABASE IF EXISTS tarea2; CREATE DATABASE tarea2 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\")",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysql\":*)",
+      "Bash(\"/c/Program Files/MySQL/MySQL Server 8.4/bin/mysql\" -u cc5002 -pprogramacionweb tarea2 -e \"SHOW TABLES;\")",
+      "Bash(python app.py:*)",
+      "Bash(Start-Sleep -Seconds 3)",
+      "Bash(curl:*)",
+      "Skill(plugin-dev:plugin-structure)",
+      "Skill(tarea4-dev:validate-css)",
+      "Skill(tarea4-dev:validate-html)",
+      "Skill(tarea4-dev:build)",
+      "Bash(mvn clean:*)",
+      "Skill(tarea4-dev:check-db)",
+      "Skill(tarea4-dev:run)",
+      "Bash(mvn spring-boot:run:*)",
+      "Skill(tarea4-dev:test-e2e)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_click"
     ]
   }
 }

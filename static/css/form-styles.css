@@ -40,7 +40,7 @@ body {
     min-height: 100vh;
     padding: 40px 0;
     align-items: flex-start;
-    margin-left: 40px 0;
+    margin-left: 40px;
 }
 
 .login-box .comments {
@@ -143,7 +143,7 @@ body {
     overflow: hidden;
     transition: .5s;
     margin-top: 40px;
-    letter-spacing: 4px
+    letter-spacing: 4px;
   }
 
   .login-box .user-box input[type="datetime-local"] {
