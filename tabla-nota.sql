@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS `tarea2`.`nota` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `actividad_id` INT NOT NULL,
   `nota` INT NOT NULL,
+  `fecha` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `fk_nota_actividad1_idx` (`actividad_id` ASC),
   CONSTRAINT `fk_nota_actividad1`
