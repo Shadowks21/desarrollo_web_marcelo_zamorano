@@ -2,24 +2,54 @@
 
 ## Descripción
 
-La **Tarea 3** consistió en extender y mejorar el proyecto web desarrollado previamente, incorporando nuevas funcionalidades tanto en el frontend como en el backend. Se trabajo principalmente con AJAX y promesas para aprovechar las ventajas que estas herramientas aportan.
+Aplicación web para gestión de actividades recreativas chilenas, desarrollada con Flask, MySQL y JavaScript con AJAX.
 
-## Decisiones tomadas
+## Instalación
 
-Durante el desarrollo de la Tarea 3, se tomaron varias decisiones importantes para lograr una aplicación completa y dinámica:
+### Requisitos
+- Python 3.x
+- MySQL Server
 
-- **Uso de AJAX y Promesas en JavaScript:** Para mejorar la experiencia del usuario y evitar recargas innecesarias de la página, se implementó el uso de AJAX junto con promesas en JavaScript. Esto permitió realizar peticiones asíncronas al servidor (por ejemplo, para agregar o listar actividades) y actualizar la interfaz de usuario en tiempo real, mostrando los cambios inmediatamente sin necesidad de recargar la página completa.
+### Configuración de Base de Datos
 
-- **Renderizado de información y gráficos en el cliente:** Se optó por renderizar la información y los gráficos directamente en el lado del cliente utilizando JavaScript. Esto permitió aprovechar librerías de visualización y manipulación del DOM para mostrar datos de manera más interactiva y visual. Por ejemplo, los gráficos de barras y otras visualizaciones se generan dinámicamente a partir de los datos obtenidos mediante AJAX, lo que facilita la actualización y personalización de la información mostrada al usuario.
+1. Crear usuario de base de datos:
+```bash
+mysql -u root -p < database/create_user.sql
+```
 
-- **Separación de responsabilidades entre frontend y backend:** El backend, desarrollado con Flask, se encargó principalmente de gestionar el acceso a la base de datos y la validación de datos. El frontend, por su parte, se centró en la interacción con el usuario, la validación previa de formularios y la actualización dinámica de la interfaz.
+2. Crear esquema y cargar datos:
+```bash
+mysql -u cc5002 -p tarea2 < database/tarea2.sql
+mysql -u cc5002 -p tarea2 < database/region-comuna.sql
+mysql -u cc5002 -p tarea2 < database/tabla-comentario.sql
+```
 
-- **Validaciones en ambos lados:** Se reforzaron las validaciones tanto en el frontend (JavaScript) como en el backend (Flask), asegurando que los datos ingresados por el usuario sean correctos antes de ser almacenados en la base de datos. Esto ayuda a prevenir errores y mejorar la seguridad de la aplicación.
+### Ejecutar Aplicación
 
-- **Rutas granulares en Flask:** Se diseñaron rutas específicas para cada funcionalidad principal (listar actividades, agregar, ver detalles, etc.), completando así la lógica para implementar el renderizado de gráficos utilizando crossorigin y la de agregar comentarios y visualizar los mismos.
+```bash
+pip install -r requirements.txt
+python app.py
+```
 
-- **Dinamismo y experiencia de usuario:** Se priorizó el dinamismo en la interfaz, permitiendo que el usuario reciba retroalimentación inmediata sobre sus acciones (por ejemplo, mensajes de éxito o error al agregar actividades) y que la información se actualice automáticamente en pantalla.
+La aplicación estará disponible en `http://localhost:5000`
 
-# Conclusión 
+## Decisiones de Diseño
 
-En resumen, la Tarea 3 implicó la integración de conceptos modernos de desarrollo web, como AJAX, promesas y renderizado dinámico en el cliente, junto con una arquitectura clara y validaciones robustas, logrando una aplicación más interactiva, eficiente y correcta al momento de utilizarla.
+- **AJAX y Promesas:** Peticiones asíncronas para actualizar la interfaz sin recargar la página
+- **Renderizado en cliente:** Gráficos generados con Chart.js desde datos obtenidos via AJAX
+- **Separación de responsabilidades:** Backend (Flask) gestiona datos, frontend maneja interacción
+- **Validaciones duales:** Validación en JavaScript (cliente) y Flask (servidor)
+- **Rutas granulares:** Endpoints específicos para cada funcionalidad (`/stats/*`, `/actividad/<id>/comentario`)
+
+## Estructura del Proyecto
+
+```
+├── app.py              # Rutas Flask y aplicación principal
+├── database/           # Scripts SQL y modelos SQLAlchemy
+├── static/
+│   ├── css/            # Estilos
+│   ├── js/             # JavaScript (AJAX, validaciones, gráficos)
+│   └── uploads/        # Imágenes subidas por usuarios
+├── templates/          # Plantillas Jinja2
+└── utils/              # Validaciones servidor
+```
