@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Actividades Recreativas{% endblock %}</title>
+    <!-- W3.CSS Framework -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <!-- Google Fonts - Open Sans -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/w3-theme.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar Superior -->
+    <nav class="w3-top-nav">
+        <div class="w3-bar">
+            <a href="{{ url_for('index') }}" class="w3-bar-item w3-brand">
+                <i class="fas fa-calendar-check"></i> Actividades Recreativas
+            </a>
+            <div class="w3-bar-item w3-right" style="display: flex; align-items: center; gap: 10px;">
+                {% if active_page != 'inicio' %}
+                    <a href="{{ url_for('index') }}" class="w3-bar-item">
+                        <i class="fas fa-home"></i> Inicio
+                    </a>
+                {% endif %}
+                {% if active_page != 'agregar-actividad' %}
+                    <a href="{{ url_for('agregar_actividad') }}" class="w3-bar-item">
+                        <i class="fas fa-plus-circle"></i> Agregar
+                    </a>
+                {% endif %}
+                {% if active_page != 'listar' %}
+                    <a href="{{ url_for('listar_actividades') }}" class="w3-bar-item">
+                        <i class="fas fa-list"></i> Actividades
+                    </a>
+                {% endif %}
+                {% if active_page != 'stats' %}
+                    <a href="{{ url_for('stats') }}" class="w3-bar-item">
+                        <i class="fas fa-chart-bar"></i> Estadisticas
+                    </a>
+                {% endif %}
+                <!-- Toggle Modo Oscuro -->
+                <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">
+                    <i class="fas fa-sun icon-sun"></i>
+                    <i class="fas fa-moon icon-moon"></i>
+                    <span class="theme-text">Tema</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="w3-content w3-animate-fade">
+        <main class="w3-padding-large">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="w3-footer">
+            <p><i class="fas fa-code"></i> Tarea 4 - CC5002 Desarrollo Web</p>
+            <p>Universidad de Chile - 2025</p>
+        </footer>
+    </div>
+
+    <!-- Script para toggle de tema -->
+    <script>
+        // Cargar tema guardado
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        });
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const sunIcon = document.querySelector('.icon-sun');
+            const moonIcon = document.querySelector('.icon-moon');
+            const themeText = document.querySelector('.theme-text');
+
+            if (theme === 'dark') {
+                sunIcon.style.display = 'inline';
+                moonIcon.style.display = 'none';
+                if (themeText) themeText.textContent = 'Claro';
+            } else {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'inline';
+                if (themeText) themeText.textContent = 'Oscuro';
+            }
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash(git commit:*)",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Antes de hacer commit, verifica:\n1. Si hay archivos .java modificados, ejecuta 'mvn clean compile' y verifica que compile sin errores\n2. Verifica que los archivos HTML no tengan errores W3C criticos\n3. Verifica que los archivos CSS no tengan errores W3C criticos\n\nSi todas las verificaciones pasan o ya fueron verificadas previamente, responde: PROCEED\nSi hay errores criticos nuevos, responde: BLOCK con la lista de errores."
+          }
+        ]
+      }
+    ]
+  }
+}

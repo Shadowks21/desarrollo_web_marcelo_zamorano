@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de Actividad{% endblock %}
+
+{% block content %}
+<div class="w3-row">
+    <!-- Columna principal - Detalles -->
+    <div class="w3-col l8 m12 w3-padding">
+        <div class="w3-card">
+            <div class="w3-card-header">
+                <h2><i class="fas fa-info-circle"></i> Detalles de la Actividad</h2>
+            </div>
+            <div class="w3-padding">
+                <div class="w3-row">
+                    <div class="w3-col m6 w3-padding">
+                        <p><i class="fas fa-align-left"></i> <strong>Descripcion:</strong></p>
+                        <p style="color: var(--text-secondary);">{{ actividad.descripcion or 'Sin descripcion' }}</p>
+                    </div>
+                    <div class="w3-col m6 w3-padding">
+                        <p><i class="fas fa-user"></i> <strong>Organizador:</strong></p>
+                        <p style="color: var(--text-secondary);">{{ actividad.nombre_organizador }}</p>
+                    </div>
+                </div>
+                <div class="w3-row">
+                    <div class="w3-col m4 w3-padding">
+                        <p><i class="fas fa-calendar-alt"></i> <strong>Inicio:</strong></p>
+                        <p style="color: var(--text-secondary);">{{ actividad.fecha_inicio }}</p>
+                    </div>
+                    <div class="w3-col m4 w3-padding">
+                        <p><i class="fas fa-flag-checkered"></i> <strong>Termino:</strong></p>
+                        <p style="color: var(--text-secondary);">{{ actividad.fecha_termino or 'No definido' }}</p>
+                    </div>
+                    <div class="w3-col m4 w3-padding">
+                        <p><i class="fas fa-tag"></i> <strong>Tema:</strong></p>
+                        <span class="w3-tag w3-green">{{ actividad.tema }}</span>
+                    </div>
+                </div>
+                <div class="w3-row">
+                    <div class="w3-col m6 w3-padding">
+                        <p><i class="fas fa-map-marker-alt"></i> <strong>Comuna:</strong></p>
+                        <p style="color: var(--text-secondary);">{{ actividad.comuna }}</p>
+                    </div>
+                    <div class="w3-col m6 w3-padding">
+                        <p><i class="fas fa-location-dot"></i> <strong>Sector:</strong></p>
+                        <p style="color: var(--text-secondary);">{{ actividad.sector or 'No especificado' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Galeria de fotos -->
+        <div class="w3-card w3-margin-top">
+            <div class="w3-card-header">
+                <h2><i class="fas fa-images"></i> Fotos ({{ actividad.total_fotos }})</h2>
+            </div>
+            <div class="w3-padding">
+                {% if actividad.imagenes %}
+                    <div class="w3-row">
+                        {% for img in actividad.imagenes %}
+                            <div class="w3-col m4 s6 w3-padding">
+                                <img src="{{ url_for('static', filename=img) }}" alt="Foto de la actividad" style="width: 100%; border-radius: 8px; cursor: pointer;" onclick="window.open(this.src)">
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="w3-center" style="color: var(--text-secondary);">No hay fotos disponibles.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna lateral - Comentarios -->
+    <div class="w3-col l4 m12 w3-padding">
+        <!-- Formulario de comentario -->
+        <div class="w3-card">
+            <div class="w3-card-header">
+                <h2><i class="fas fa-comment-dots"></i> Agregar Comentario</h2>
+            </div>
+            <div class="w3-padding">
+                <form id="comentario-form" method="post" action="{{ url_for('agregar_comentario', activity_id=actividad.id) }}">
+                    <div class="w3-margin-bottom">
+                        <label class="w3-label" for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" class="w3-input" minlength="3" maxlength="80" required placeholder="Tu nombre">
+                    </div>
+                    <div class="w3-margin-bottom">
+                        <label class="w3-label" for="texto">Comentario:</label>
+                        <textarea id="texto" name="texto" class="w3-input" rows="4" minlength="5" required placeholder="Escribe tu comentario..."></textarea>
+                    </div>
+                    {% if error %}
+                        <div class="w3-panel w3-pale-red w3-border w3-border-red w3-round">
+                            <p>{{ error }}</p>
+                        </div>
+                    {% endif %}
+                    <button type="submit" class="w3-button w3-primary" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Enviar Comentario
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Lista de comentarios -->
+        <div class="w3-card w3-margin-top">
+            <div class="w3-card-header">
+                <h2><i class="fas fa-comments"></i> Comentarios</h2>
+            </div>
+            <div class="w3-padding">
+                {% if comentarios %}
+                    {% for comentario in comentarios %}
+                        <div class="w3-panel w3-leftbar w3-border-green" style="background-color: var(--bg-color);">
+                            <p><strong><i class="fas fa-user"></i> {{ comentario.nombre }}</strong></p>
+                            <p style="color: var(--text-secondary);">{{ comentario.texto }}</p>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);">
+                                <i class="fas fa-clock"></i> {{ comentario.fecha }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="w3-center" style="color: var(--text-secondary);">
+                        <i class="fas fa-comment-slash"></i> No hay comentarios aun. Se el primero en comentar.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Boton volver -->
+<div class="w3-center w3-margin-top">
+    <a href="{{ url_for('listar_actividades') }}" class="w3-button w3-secondary">
+        <i class="fas fa-arrow-left"></i> Volver al Listado
+    </a>
+</div>
+{% endblock %}

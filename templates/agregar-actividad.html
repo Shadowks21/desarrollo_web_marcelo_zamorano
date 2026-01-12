@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block title %}Agregar Actividad{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        margin-bottom: 30px;
+    }
+    .form-section h3 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--primary-light);
+    }
+    .form-section h3 i {
+        margin-right: 10px;
+    }
+    .w3-input, .w3-select, textarea {
+        margin-bottom: 15px;
+    }
+    textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 16px;
+        background-color: var(--bg-card);
+        color: var(--text-color);
+        resize: vertical;
+    }
+    textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px var(--primary-light);
+    }
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    }
+    .modal-content {
+        background-color: var(--bg-card);
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        max-width: 400px;
+    }
+    .error-message {
+        color: var(--error-color);
+        font-size: 0.9rem;
+        margin-top: -10px;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="w3-card">
+    <div class="w3-card-header">
+        <h2><i class="fas fa-plus-circle"></i> Agregar Nueva Actividad</h2>
+    </div>
+    <div class="w3-padding-large">
+        <form name="agregar-actividad-form" method="post" enctype="multipart/form-data" action="{{ url_for('agregar_actividad') }}">
+            <!-- Modal de confirmacion -->
+            <div id="confirm-modal" class="modal" hidden>
+                <div class="modal-content" id="confirm-content">
+                    <i class="fas fa-question-circle" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 20px;"></i>
+                    <p>Esta seguro de que desea enviar el formulario?</p>
+                    <div class="w3-margin-top">
+                        <button type="button" id="confirm-btn" class="w3-button w3-primary">
+                            <i class="fas fa-check"></i> Confirmar
+                        </button>
+                        <button type="button" id="cancel-btn" class="w3-button w3-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-content" id="thank-you-content" hidden>
+                    <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success-color); margin-bottom: 20px;"></i>
+                    <p>Hemos recibido su informacion, muchas gracias y suerte en su actividad.</p>
+                    <button type="button" id="return-btn" class="w3-button w3-primary w3-margin-top">
+                        <i class="fas fa-home"></i> Volver a la portada
+                    </button>
+                </div>
+            </div>
+
+            <!-- Errores del servidor -->
+            {% if errors %}
+            <div class="w3-panel w3-pale-red w3-border w3-border-red w3-round w3-margin-bottom">
+                <h3><i class="fas fa-exclamation-triangle"></i> Errores en el formulario</h3>
+                <ul>
+                    {% for error_message in errors %}
+                        <li>{{ error_message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- Errores de validacion JavaScript -->
+            <div id="form-error" class="w3-panel w3-pale-yellow w3-border w3-border-yellow w3-round w3-margin-bottom" hidden>
+                <h3><i class="fas fa-exclamation-circle"></i> Errores en el formulario</h3>
+                <ul id="error-list"></ul>
+            </div>
+
+            <!-- Seccion: Ubicacion -->
+            <section class="form-section">
+                <h3><i class="fas fa-map-marker-alt"></i> Donde sera su evento?</h3>
+                <div class="w3-row">
+                    <div class="w3-col m4 w3-padding">
+                        <label class="w3-label" for="select-region">Region *</label>
+                        <select id="select-region" name="select-region" class="w3-select" required>
+                            <option value="">Seleccione una region</option>
+                        </select>
+                        <p class="error-message" hidden id="error-message-region"></p>
+                    </div>
+                    <div class="w3-col m4 w3-padding">
+                        <label class="w3-label" for="select-comuna">Comuna *</label>
+                        <select id="select-comuna" name="select-comuna" class="w3-select" required>
+                            <option value="">Seleccione una comuna</option>
+                        </select>
+                        <p class="error-message" hidden id="error-message-comuna"></p>
+                    </div>
+                    <div class="w3-col m4 w3-padding">
+                        <label class="w3-label" for="sector">Sector (opcional)</label>
+                        <input type="text" id="sector" name="sector" class="w3-input" maxlength="100" placeholder="Ej: Plaza central">
+                        <p class="error-message" hidden id="error-message-sector"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seccion: Organizador -->
+            <section class="form-section">
+                <h3><i class="fas fa-user"></i> Quien organiza el evento?</h3>
+                <div class="w3-row">
+                    <div class="w3-col m6 w3-padding">
+                        <label class="w3-label" for="nombre">Nombre del organizador *</label>
+                        <input type="text" id="nombre" name="nombre" class="w3-input" required maxlength="200" placeholder="Nombre completo">
+                        <p class="error-message" hidden id="error-message-nombre"></p>
+                    </div>
+                    <div class="w3-col m6 w3-padding">
+                        <label class="w3-label" for="email">Correo electronico *</label>
+                        <input type="email" id="email" name="email" class="w3-input" required maxlength="100" placeholder="ejemplo@correo.com">
+                        <p class="error-message" hidden id="error-message-email"></p>
+                    </div>
+                </div>
+                <div class="w3-row">
+                    <div class="w3-col m6 w3-padding">
+                        <label class="w3-label" for="telefono">Telefono (opcional)</label>
+                        <input type="tel" id="telefono" name="telefono" class="w3-input" placeholder="+56.912345678">
+                        <p class="error-message" hidden id="error-message-telefono"></p>
+                    </div>
+                    <div class="w3-col m6 w3-padding" id="contacto-div">
+                        <label class="w3-label" for="contacto">Redes sociales</label>
+                        <select id="contacto" name="contacto" class="w3-select">
+                            <option value="">Agregar red social</option>
+                            <option value="whatsapp">WhatsApp</option>
+                            <option value="telegram">Telegram</option>
+                            <option value="X">X (Twitter)</option>
+                            <option value="instagram">Instagram</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="otra">Otra</option>
+                        </select>
+                        <p class="error-message" hidden id="error-message-contacto"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seccion: Detalles -->
+            <section class="form-section">
+                <h3><i class="fas fa-info-circle"></i> Cuando y de que trata?</h3>
+                <div class="w3-row">
+                    <div class="w3-col m6 w3-padding">
+                        <label class="w3-label" for="fecha-y-hora-inicio">Fecha y hora de inicio *</label>
+                        <input type="datetime-local" id="fecha-y-hora-inicio" name="fecha-y-hora-inicio" class="w3-input" required>
+                        <p class="error-message" hidden id="error-message-fecha"></p>
+                    </div>
+                    <div class="w3-col m6 w3-padding">
+                        <label class="w3-label" for="fecha-y-hora-fin">Fecha y hora de termino (opcional)</label>
+                        <input type="datetime-local" id="fecha-y-hora-fin" name="fecha-y-hora-fin" class="w3-input">
+                        <p class="error-message" hidden id="error-message-fecha-fin"></p>
+                    </div>
+                </div>
+                <div class="w3-row">
+                    <div class="w3-col m6 w3-padding">
+                        <label class="w3-label" for="tema">Tema de la actividad *</label>
+                        <select id="tema" name="tema" class="w3-select" required>
+                            <option value="">Seleccione un tema</option>
+                            <option value="musica">Musica</option>
+                            <option value="deporte">Deporte</option>
+                            <option value="ciencias">Ciencias</option>
+                            <option value="religion">Religion</option>
+                            <option value="politica">Politica</option>
+                            <option value="tecnologia">Tecnologia</option>
+                            <option value="juegos">Juegos</option>
+                            <option value="baile">Baile</option>
+                            <option value="comida">Comida</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                        <p class="error-message" hidden id="error-message-tema"></p>
+                    </div>
+                    <div class="w3-col m6 w3-padding" id="tema-otro-div" hidden>
+                        <label class="w3-label" for="tema-otro">Especifique el tema</label>
+                        <input type="text" id="tema-otro" name="tema-otro" class="w3-input" maxlength="100" placeholder="Describa el tema">
+                        <p class="error-message" hidden id="error-message-tema-otro"></p>
+                    </div>
+                </div>
+                <div class="w3-row">
+                    <div class="w3-col l12 w3-padding">
+                        <label class="w3-label" for="descripcion">Descripcion (opcional)</label>
+                        <textarea id="descripcion" name="descripcion" rows="4" placeholder="Describa brevemente la actividad..."></textarea>
+                        <p class="error-message" hidden id="error-message-descripcion"></p>
+                    </div>
+                </div>
+                <div class="w3-row">
+                    <div class="w3-col l12 w3-padding" id="imagen-div">
+                        <label class="w3-label" for="imagenes"><i class="fas fa-camera"></i> Imagenes (1-5 archivos) *</label>
+                        <input type="file" id="imagenes" name="imagenes" class="w3-input" accept="image/*" multiple required>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary);">Formatos: PNG, JPG, JPEG. Max 5MB por imagen.</p>
+                        <p class="error-message" hidden id="error-message-imagen"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Boton de envio -->
+            <div class="w3-center w3-margin-top">
+                <button type="button" id="submit-btn" class="w3-button w3-primary" onclick="validar()" style="padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-paper-plane"></i> Agregar Actividad
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{{ url_for('static', filename='js/form-validation.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/agregar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/region_comuna.js') }}"></script>
+{% endblock %}

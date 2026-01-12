@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Actividades Recreativas{% endblock %}
+
+{% block content %}
+<!-- Banner de Bienvenida -->
+<div class="welcome-banner">
+    <h1><i class="fas fa-calendar-check"></i> Actividades Recreativas de Chile</h1>
+    <p>Descubre y participa en las mejores actividades cerca de ti</p>
+</div>
+
+<!-- Seccion de ultimas actividades -->
+<div class="w3-card">
+    <div class="w3-card-header">
+        <h2><i class="fas fa-clock"></i> Ultimas Actividades Registradas</h2>
+    </div>
+    <div class="w3-padding">
+        {% if data %}
+            <div class="activity-grid">
+                {% for actividad in data %}
+                <div class="activity-card">
+                    {% if actividad.imagen %}
+                        <img src="{{ url_for('static', filename=actividad.imagen[0]) }}" alt="Imagen de {{ actividad.tema }}">
+                    {% else %}
+                        <div style="height: 200px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-image" style="font-size: 4rem; color: white; opacity: 0.5;"></i>
+                        </div>
+                    {% endif %}
+                    <div class="activity-card-body">
+                        <span class="w3-tag w3-green">{{ actividad.tema }}</span>
+                        <h3 class="activity-card-title w3-margin-top">{{ actividad.comuna }}</h3>
+                        <p class="activity-card-info">
+                            <i class="fas fa-map-marker-alt"></i> {{ actividad.sector or 'Sin sector' }}
+                        </p>
+                        <p class="activity-card-info">
+                            <i class="fas fa-calendar"></i> {{ actividad.inicio }}
+                        </p>
+                        {% if actividad.termino %}
+                        <p class="activity-card-info">
+                            <i class="fas fa-flag-checkered"></i> {{ actividad.termino }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="w3-center w3-padding-large">
+                <i class="fas fa-calendar-times" style="font-size: 4rem; color: var(--text-secondary);"></i>
+                <p class="w3-margin-top">No hay actividades registradas.</p>
+                <a href="{{ url_for('agregar_actividad') }}" class="w3-button w3-primary w3-margin-top">
+                    <i class="fas fa-plus"></i> Agregar Primera Actividad
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Accesos rapidos -->
+<div class="w3-row w3-margin-top">
+    <div class="w3-col m4 w3-padding">
+        <div class="w3-card w3-center w3-padding-large">
+            <i class="fas fa-plus-circle" style="font-size: 3rem; color: var(--primary-color);"></i>
+            <h3>Agregar Actividad</h3>
+            <p>Publica una nueva actividad recreativa</p>
+            <a href="{{ url_for('agregar_actividad') }}" class="w3-button w3-primary">Agregar</a>
+        </div>
+    </div>
+    <div class="w3-col m4 w3-padding">
+        <div class="w3-card w3-center w3-padding-large">
+            <i class="fas fa-list" style="font-size: 3rem; color: var(--secondary-color);"></i>
+            <h3>Ver Actividades</h3>
+            <p>Explora todas las actividades disponibles</p>
+            <a href="{{ url_for('listar_actividades') }}" class="w3-button w3-secondary">Ver Lista</a>
+        </div>
+    </div>
+    <div class="w3-col m4 w3-padding">
+        <div class="w3-card w3-center w3-padding-large">
+            <i class="fas fa-chart-bar" style="font-size: 3rem; color: var(--accent-color);"></i>
+            <h3>Estadisticas</h3>
+            <p>Visualiza datos y tendencias</p>
+            <a href="{{ url_for('stats') }}" class="w3-button w3-accent">Ver Stats</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

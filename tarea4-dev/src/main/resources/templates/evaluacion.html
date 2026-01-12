@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Evaluacion - Actividades Recreativas</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-color: #03e9f4;
+            --accent-hover: #00b4d8;
+            --success-color: #3fb950;
+            --warning-color: #d29922;
+            --error-color: #f85149;
+            --border-color: #30363d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--accent-color);
+            text-align: center;
+            font-size: 2rem;
+            text-shadow: 0 0 10px rgba(3, 233, 244, 0.3);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 25px;
+            text-align: center;
+        }
+
+        .stat-item .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .stat-item .label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .table-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: var(--bg-tertiary);
+        }
+
+        th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--accent-color);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .promedio-cell {
+            font-weight: bold;
+            min-width: 100px;
+        }
+
+        .promedio-alto {
+            color: var(--success-color);
+        }
+
+        .promedio-medio {
+            color: var(--warning-color);
+        }
+
+        .promedio-bajo {
+            color: var(--error-color);
+        }
+
+        .sin-evaluar {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-evaluar {
+            background-color: var(--accent-color);
+            color: var(--bg-primary);
+        }
+
+        .btn-evaluar:hover {
+            background-color: var(--accent-hover);
+            box-shadow: 0 0 15px rgba(3, 233, 244, 0.4);
+        }
+
+        .btn-evaluar:disabled {
+            background-color: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* Modal de Evaluacion */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal h2 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .modal-info {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .nota-selector {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nota-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nota-btn:hover {
+            border-color: var(--accent-color);
+            background-color: rgba(3, 233, 244, 0.1);
+        }
+
+        .nota-btn.selected {
+            border-color: var(--accent-color);
+            background-color: var(--accent-color);
+            color: var(--bg-primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-cancelar {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-cancelar:hover {
+            background-color: var(--border-color);
+        }
+
+        .btn-confirmar {
+            background-color: var(--success-color);
+            color: var(--bg-primary);
+        }
+
+        .btn-confirmar:hover {
+            background-color: #2ea043;
+        }
+
+        .btn-confirmar:disabled {
+            background-color: var(--bg-tertiary);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* Mensaje de feedback */
+        .feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 1100;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+
+        .feedback.show {
+            transform: translateX(0);
+        }
+
+        .feedback.success {
+            background-color: var(--success-color);
+            color: var(--bg-primary);
+        }
+
+        .feedback.error {
+            background-color: var(--error-color);
+            color: var(--text-primary);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 800px;
+            }
+
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .stats-bar {
+                gap: 15px;
+            }
+
+            .stat-item {
+                padding: 10px 15px;
+            }
+
+            .stat-item .number {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Evaluaciones badge */
+        .evaluaciones-badge {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Sistema de Evaluacion de Actividades</h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Estadisticas -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="number" th:text="${totalActividades}">0</div>
+                <div class="label">Actividades Realizadas</div>
+            </div>
+        </div>
+
+        <!-- Tabla de Actividades -->
+        <div class="table-container">
+            <table th:if="${!actividades.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha Inicio</th>
+                        <th>Sector</th>
+                        <th>Organizador</th>
+                        <th>Tema</th>
+                        <th>Comuna</th>
+                        <th>Promedio</th>
+                        <th>Evaluar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="act : ${actividades}" th:id="'row-' + ${act.id}">
+                        <td th:text="${act.id}">1</td>
+                        <td th:text="${act.fechaInicio}">01/01/2024 10:00</td>
+                        <td th:text="${act.sector}">Centro</td>
+                        <td th:text="${act.nombre}">Juan Perez</td>
+                        <td th:text="${act.tema}">Deporte</td>
+                        <td th:text="${act.comuna}">Santiago</td>
+                        <td class="promedio-cell" th:id="'promedio-' + ${act.id}">
+                            <span th:if="${act.promedio != 'Sin evaluar'}"
+                                  th:text="${act.promedio}"
+                                  th:classappend="${act.promedio >= 5.5 ? 'promedio-alto' : (act.promedio >= 4.0 ? 'promedio-medio' : 'promedio-bajo')}">
+                            </span>
+                            <span th:if="${act.promedio == 'Sin evaluar'}" class="sin-evaluar">Sin evaluar</span>
+                            <span class="evaluaciones-badge" th:id="'evals-' + ${act.id}"
+                                  th:text="'(' + ${act.numEvaluaciones} + ' eval.)'"></span>
+                        </td>
+                        <td>
+                            <button class="btn btn-evaluar"
+                                    th:data-id="${act.id}"
+                                    th:data-nombre="${act.nombre}"
+                                    th:data-tema="${act.tema}"
+                                    onclick="abrirModal(this)">
+                                Evaluar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Estado vacio -->
+            <div class="empty-state" th:if="${actividades.isEmpty()}">
+                <h3>No hay actividades realizadas</h3>
+                <p>Las actividades apareceran aqui una vez que hayan terminado.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Evaluacion -->
+    <div class="modal-overlay" id="modalEvaluacion">
+        <div class="modal">
+            <h2>Evaluar Actividad</h2>
+            <p class="modal-info">
+                <strong id="modalTema">Tema</strong> - Organizado por <strong id="modalNombre">Nombre</strong>
+            </p>
+            <p style="color: var(--text-secondary); margin-bottom: 15px; font-size: 0.9rem;">
+                Selecciona una nota del 1 al 7:
+            </p>
+            <div class="nota-selector" id="notaSelector">
+                <button class="nota-btn" data-nota="1">1</button>
+                <button class="nota-btn" data-nota="2">2</button>
+                <button class="nota-btn" data-nota="3">3</button>
+                <button class="nota-btn" data-nota="4">4</button>
+                <button class="nota-btn" data-nota="5">5</button>
+                <button class="nota-btn" data-nota="6">6</button>
+                <button class="nota-btn" data-nota="7">7</button>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-confirmar" id="btnConfirmar" onclick="enviarNota()" disabled>
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensaje de feedback -->
+    <div class="feedback" id="feedback"></div>
+
+    <script>
+        // Variables globales
+        let actividadIdActual = null;
+        let notaSeleccionada = null;
+
+        // Inicializar eventos de botones de nota
+        document.querySelectorAll('.nota-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Quitar seleccion anterior
+                document.querySelectorAll('.nota-btn').forEach(b => b.classList.remove('selected'));
+                // Seleccionar actual
+                this.classList.add('selected');
+                notaSeleccionada = parseInt(this.dataset.nota);
+                // Habilitar boton confirmar
+                document.getElementById('btnConfirmar').disabled = false;
+            });
+        });
+
+        /**
+         * Abre el modal de evaluacion para una actividad.
+         */
+        function abrirModal(button) {
+            actividadIdActual = button.dataset.id;
+            const nombre = button.dataset.nombre;
+            const tema = button.dataset.tema;
+
+            document.getElementById('modalNombre').textContent = nombre;
+            document.getElementById('modalTema').textContent = tema;
+
+            // Resetear seleccion
+            document.querySelectorAll('.nota-btn').forEach(b => b.classList.remove('selected'));
+            notaSeleccionada = null;
+            document.getElementById('btnConfirmar').disabled = true;
+
+            // Mostrar modal
+            document.getElementById('modalEvaluacion').classList.add('active');
+        }
+
+        /**
+         * Cierra el modal de evaluacion.
+         */
+        function cerrarModal() {
+            document.getElementById('modalEvaluacion').classList.remove('active');
+            actividadIdActual = null;
+            notaSeleccionada = null;
+        }
+
+        /**
+         * Envia la nota via AJAX al servidor.
+         */
+        async function enviarNota() {
+            if (!actividadIdActual || !notaSeleccionada) {
+                mostrarFeedback('Selecciona una nota', 'error');
+                return;
+            }
+
+            const btnConfirmar = document.getElementById('btnConfirmar');
+            btnConfirmar.disabled = true;
+            btnConfirmar.innerHTML = '<span class="loading"></span>';
+
+            try {
+                const response = await fetch(`/api/actividades/${actividadIdActual}/nota`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ nota: notaSeleccionada })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Actualizar promedio en la tabla
+                    actualizarPromedio(actividadIdActual, data.nuevoPromedio, data.totalEvaluaciones);
+                    mostrarFeedback('Evaluacion registrada exitosamente', 'success');
+                    cerrarModal();
+                } else {
+                    mostrarFeedback(data.error || 'Error al registrar la nota', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarFeedback('Error de conexion. Intenta nuevamente.', 'error');
+            } finally {
+                btnConfirmar.disabled = false;
+                btnConfirmar.textContent = 'Confirmar';
+            }
+        }
+
+        /**
+         * Actualiza el promedio mostrado en la tabla sin recargar la pagina.
+         */
+        function actualizarPromedio(actividadId, nuevoPromedio, totalEvaluaciones) {
+            const promedioCell = document.getElementById(`promedio-${actividadId}`);
+            const evalsSpan = document.getElementById(`evals-${actividadId}`);
+
+            if (promedioCell) {
+                // Determinar clase de color segun promedio
+                let claseColor = 'promedio-bajo';
+                if (nuevoPromedio >= 5.5) {
+                    claseColor = 'promedio-alto';
+                } else if (nuevoPromedio >= 4.0) {
+                    claseColor = 'promedio-medio';
+                }
+
+                // Actualizar HTML
+                promedioCell.innerHTML = `
+                    <span class="${claseColor}">${nuevoPromedio}</span>
+                    <span class="evaluaciones-badge">(${totalEvaluaciones} eval.)</span>
+                `;
+            }
+        }
+
+        /**
+         * Muestra un mensaje de feedback al usuario.
+         */
+        function mostrarFeedback(mensaje, tipo) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = mensaje;
+            feedback.className = `feedback ${tipo} show`;
+
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 3000);
+        }
+
+        // Cerrar modal con Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                cerrarModal();
+            }
+        });
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modalEvaluacion').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cerrarModal();
+            }
+        });
+    </script>
+</body>
+</html>

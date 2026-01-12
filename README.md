@@ -1,25 +1,55 @@
-# Tarea 1 - Desarrollo Web - Marcelo Zamorano
+# Tarea 3 - Desarrollo Web - Marcelo Zamorano
 
 ## Descripción
-En el presente repositorio se encuentra la implementación de la Tarea 1 de Desarrollo de aplicaciones web. En ella se encontraran con 3 carpetas principales, divididas por las principales herramientas utilizadas en este curso para el alcance de la Tarea 1.
 
-- JavaScript.
-- HTML.
-- CSS.
+Aplicación web para gestión de actividades recreativas chilenas, desarrollada con Flask, MySQL y JavaScript con AJAX.
 
-En cada uno podrán encontrar el código y recursos necesarios para que la página web corra como debiese.
+## Instalación
 
-## Decisiones tomadas
-- Quise darle personalidad y diseño a mi página (aunque esto no fuese el fuerte) para tener un resultado más pulido. Es por esto que en los códigos de CSS verán muchas instrucciones y funciones medianamente avanzadas para incluir fluidez a la página. Mi decisión comenzó en el momento que quise darle más diseño a mi formulario, por lo que verán que todos los css estan basados en form-styles.css. En el encontraran la paleta de colores que decidí usar. El formato de labels, inputs y botones no los realice yo, estos fuerón sacados de https://codepen.io/soufiane-khalfaoui-hassani/pen/LYpPWda. Investigando más afondo, y dando una implementación simple y guida por este template, pude crear las otras clases para selects, inputs de tipo datetime-hour, etc.
+### Requisitos
+- Python 3.x
+- MySQL Server
 
-- Quise prácticar la modularidad de las clases auxiliares. Es por esto que en los códigos de JavaScript encontraran distintas funciones para ejecutar las distintas válidaciones y funciones extras que se gatillan con ciertos cambios en algunos inputs. Se aprovecho bastante el hecho que las funciones se pueden declarar con variables tipo "const", para así pasarlas como argumento a distintos EventListeners. Como podrán notar, hay algunos archivos html en donde preferí dejar que el mismo boton de submit por ejemplo tenga el atributo onchange en su declaración y no un EventListener. Esto con motivos de depuración más agilizada.
+### Configuración de Base de Datos
 
-- Se tuvo que indagar bastante en las funciones de las estructuras de datos de JavaScript y en que significa cada atributo (por ejemplo, a veces se requería usar value en vez de textContent), pero siempre se mantuvo todo dentro de lo repasado en clases, a excepción de algunas pequeñas funcionalidades como el scroll automatico hacia la ventana de confirmación de envío del formulario y el mismo scroll del formulario. Eso se investigo aparte para dar una mejor fluidez (y porque el formulario no me cabía en toda la pantalla).
+1. Crear usuario de base de datos:
+```bash
+mysql -u root -p < database/create_user.sql
+```
 
-- Se investigo y decidio usar chart.js para crear gráficos más visuales además de un mejor manejo de los datos, como si fuese la libreria de matplotlib (es bastante parecida). Con simples cambios en los atributos css de las estructuras de datos de HTML, se pueden lograr bastante cosas.
+2. Crear esquema y cargar datos:
+```bash
+mysql -u cc5002 -p tarea2 < database/tarea2.sql
+mysql -u cc5002 -p tarea2 < database/region-comuna.sql
+mysql -u cc5002 -p tarea2 < database/tabla-comentario.sql
+```
 
-- Para probar las dos formas de exportar imagenes en HTML (desde la web y desde el propio computador), las imagenes mostradas en el index.html son importadas desde la web y las mostradas en listado-actividad.html son importadas desde local.
+### Ejecutar Aplicación
 
-## Conclusiones
+```bash
+pip install -r requirements.txt
+python app.py
+```
 
-El proyecto de construir el esquelo y diseño de la página fue algo arduo y muchas veces tedioso pues muchas veces el manejo de estilos es enredado si no se realiza bien. Para las futuras tareas, tengo como objetivo utilizar mejor la herramienta de clases en css para poder obtener un código más organizado y entendible.
+La aplicación estará disponible en `http://localhost:5000`
+
+## Decisiones de Diseño
+
+- **AJAX y Promesas:** Peticiones asíncronas para actualizar la interfaz sin recargar la página
+- **Renderizado en cliente:** Gráficos generados con Chart.js desde datos obtenidos via AJAX
+- **Separación de responsabilidades:** Backend (Flask) gestiona datos, frontend maneja interacción
+- **Validaciones duales:** Validación en JavaScript (cliente) y Flask (servidor)
+- **Rutas granulares:** Endpoints específicos para cada funcionalidad (`/stats/*`, `/actividad/<id>/comentario`)
+
+## Estructura del Proyecto
+
+```
+├── app.py              # Rutas Flask y aplicación principal
+├── database/           # Scripts SQL y modelos SQLAlchemy
+├── static/
+│   ├── css/            # Estilos
+│   ├── js/             # JavaScript (AJAX, validaciones, gráficos)
+│   └── uploads/        # Imágenes subidas por usuarios
+├── templates/          # Plantillas Jinja2
+└── utils/              # Validaciones servidor
+```
